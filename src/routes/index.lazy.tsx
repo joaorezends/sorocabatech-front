@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
 import logo from '/logo.svg';
-import Icon from '../components/Icon'
+import { createLazyFileRoute } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
 import { Link, Social, SocialType } from '../types'
+import Icon from '../components/Icon'
 
-const Linktree = () => {
+const Index = () => {
   const [links, setLinks] = useState<Link[]>([])
   const [socials, setSocials] = useState<Social[]>([])
 
@@ -31,7 +32,7 @@ const Linktree = () => {
     <div className="min-h-screen bg-tertiary">
       <div className="flex flex-col max-w-xl mx-auto py-16 px-4">
         <img className="mx-auto rounded-full w-24 h-24" src={logo} alt="sorocaba.tech logo" width="96" height="96" />
-        <h1 className="mt-4 text-center text-lg font-bold leading-normal text-primary">@sorocaba.tech</h1>
+        <h1 className="mt-4 text-center text-lg font-bold text-primary">@sorocaba.tech</h1>
         <ul className="flex justify-center gap-5 mt-5">
           {socials.map((social, index) =>
             <li key={index}>
@@ -51,7 +52,7 @@ const Linktree = () => {
         <ul className="flex flex-col gap-4 mt-9">
           {links.map((link, index) =>
             <li key={index}>
-              <a className="btn btn-quaternary btn-lg" href={link.url} target="_blank" rel="noopener">
+              <a className="button button-quaternary button-lg" href={link.url} target="_blank" rel="noopener">
                 {link.name}
               </a>
             </li>
@@ -62,4 +63,6 @@ const Linktree = () => {
   )
 }
 
-export default Linktree
+export const Route = createLazyFileRoute('/')({
+  component: Index,
+})

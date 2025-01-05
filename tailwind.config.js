@@ -19,7 +19,17 @@ export default {
   plugins: [
     plugin(function({ addComponents, theme }) {
       addComponents({
-        '.btn': {
+        '.input': {
+          paddingTop: theme('spacing.3'),
+          paddingInlineEnd: theme('spacing.3'),
+          paddingBottom: theme('spacing.3'),
+          paddingInlineStart: theme('spacing.3'),
+          fontSize: theme('fontSize.base'),
+          borderWidth: theme('borderWidth.DEFAULT'),
+          borderColor: theme('colors.neutral.400'),
+        },
+
+        '.button': {
           display: 'flex',
           justifyContent: 'center',
           paddingTop: theme('spacing.3'),
@@ -29,22 +39,31 @@ export default {
           fontSize: theme('fontSize.base'),
           fontWeight: theme('fontWeight.bold'),
           lineHeight: theme('lineHeight.6'),
+          borderWidth: theme('borderWidth.DEFAULT'),
+          borderColor: theme('colors.transparent'),
         },
-        '.btn-secondary': {
+        '.button-primary': {
+          backgroundColor: theme('colors.primary'),
+          color: theme('colors.white'),
+          borderColor: theme('colors.primary'),
+        },
+        '.button-secondary': {
           backgroundColor: theme('colors.secondary'),
           color: theme('colors.white'),
+          borderColor: theme('colors.secondary'),
         },
-        '.btn-quaternary': {
+        '.button-quaternary': {
           backgroundColor: theme('colors.quaternary'),
           color: theme('colors.primary'),
+          borderColor: theme('colors.quaternary'),
         },
-        '.btn-lg': {
+        '.button-lg': {
           paddingTop: theme('spacing.[3.5]'),
           paddingBottom: theme('spacing.[3.5]'),
           fontSize: theme('fontSize.lg'),
           lineHeight: theme('lineHeight.7'),
         },
-        '.btn-xl': {
+        '.button-xl': {
           paddingTop: theme('spacing.4'),
           paddingBottom: theme('spacing.4'),
           fontSize: theme('fontSize.xl'),
