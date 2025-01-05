@@ -51,7 +51,7 @@ const Linktree = () => {
         <ul className="flex flex-col gap-4 mt-9">
           {links.map((link, index) =>
             <li key={index}>
-              <a className="btn btn-secondary btn-lg" href={link.url} target="_blank" rel="noopener">
+              <a className="btn btn-quaternary btn-lg" href={link.url} target="_blank" rel="noopener">
                 {link.name}
               </a>
             </li>
