@@ -11,6 +11,6 @@ export interface Social {
 }
 
 export enum SocialType {
-  WHATSAPP = 'whatsapp',
   INSTAGRAM = 'instagram',
+  WHATSAPP = 'whatsapp',
 }
