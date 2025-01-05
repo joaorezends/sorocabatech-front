@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import logo from '/logo.png';
+import logo from '/logo.svg';
 import Icon from '../components/Icon'
 import { Link, Social, SocialType } from '../types'
 
