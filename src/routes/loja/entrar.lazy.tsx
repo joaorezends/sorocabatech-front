@@ -1,16 +1,32 @@
 import logo from '/logo.svg';
 import { useForm } from '@tanstack/react-form';
+import { useMutation } from '@tanstack/react-query';
 import { createLazyFileRoute, Link } from '@tanstack/react-router'
+import { Credentials } from '../../types';
 
 const SignIn = () => {
+  const { mutate } = useMutation({
+    mutationFn: async (credentials: Credentials) => {
+      const response = await fetch(import.meta.env.VITE_API_URL + '/auth/sign-in', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      })
+      console.log(response);
+    },
+    onSuccess: () => {
+    },
+  })
+
   const { handleSubmit, Field } = useForm({
     defaultValues: {
       email: '',
       password: '',
     },
-    onSubmit: async ({ value }) => {
-      console.log(value)
-    },
+    onSubmit: async ({ value }) => mutate(value),
   })
 
   return (
