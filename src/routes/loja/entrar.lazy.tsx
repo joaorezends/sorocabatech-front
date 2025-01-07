@@ -4,10 +4,14 @@ import { useMutation } from '@tanstack/react-query';
 import { createLazyFileRoute, Link } from '@tanstack/react-router'
 import { Credentials } from '../../types';
 
-const SignIn = () => {
+export const Route = createLazyFileRoute('/loja/entrar')({
+  component: RouteComponent,
+})
+
+function RouteComponent() {
   const { mutate } = useMutation({
     mutationFn: async (credentials: Credentials) => {
-      const response = await fetch(import.meta.env.VITE_API_URL + '/auth/sign-in', {
+      const response = await fetch(import.meta.env.VITE_API_URL + '/customers/auth/login', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -83,7 +87,3 @@ const SignIn = () => {
     </div>
   )
 }
-
-export const Route = createLazyFileRoute('/loja/entrar')({
-  component: SignIn,
-})

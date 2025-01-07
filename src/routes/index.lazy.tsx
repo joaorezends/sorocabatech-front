@@ -4,7 +4,11 @@ import { createLazyFileRoute } from '@tanstack/react-router'
 import { Link, Social, SocialType } from '../types'
 import Icon from '../components/Icon'
 
-const Index = () => {
+export const Route = createLazyFileRoute('/')({
+  component: RouteComponent,
+})
+
+function RouteComponent() {
   const { data: links } = useQuery<Link[]>({
     queryKey: ['links'],
     queryFn: async () => {
@@ -57,7 +61,3 @@ const Index = () => {
     </div>
   )
 }
-
-export const Route = createLazyFileRoute('/')({
-  component: Index,
-})
