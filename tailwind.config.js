@@ -54,6 +54,9 @@ export default {
           borderWidth: theme('borderWidth.DEFAULT'),
           borderColor: theme('colors.transparent'),
         },
+        '.button:disabled': {
+          opacity: '0.5',
+        },
         '.button-primary': {
           backgroundColor: theme('colors.primary.DEFAULT'),
           color: theme('colors.white'),
