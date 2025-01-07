@@ -35,7 +35,7 @@ function RouteComponent() {
   const navigate = Route.useNavigate();
   const search = Route.useSearch()
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async (credentials: Credentials) => {
       const response = await fetch(
         import.meta.env.VITE_API_URL + '/users/auth/login',
@@ -192,9 +192,9 @@ function RouteComponent() {
                   <button
                     className="button button-primary w-full"
                     type="submit"
-                    disabled={!canSubmit}
+                    disabled={!canSubmit || isPending}
                   >
-                    {isSubmitting ? '...' : 'Entrar'}
+                    {isSubmitting || isPending ? '...' : 'Entrar'}
                   </button>
                 )}
               />

@@ -17,7 +17,7 @@ function RouteComponent() {
     setShowPassword(!showPassword)
   }, [showPassword])
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async (credentials: Credentials) => {
       const response = await fetch(
         import.meta.env.VITE_API_URL + '/customers/auth/login',
@@ -148,8 +148,12 @@ function RouteComponent() {
               <Subscribe
                 selector={(state) => [state.canSubmit, state.isSubmitting]}
                 children={([canSubmit, isSubmitting]) => (
-                  <button className="button button-primary w-full" type="submit" disabled={!canSubmit}>
-                    {isSubmitting ? '...' : 'Entrar'}
+                  <button
+                    className="button button-primary w-full"
+                    type="submit"
+                    disabled={!canSubmit || isPending}
+                  >
+                    {isSubmitting || isPending ? '...' : 'Entrar'}
                   </button>
                 )}
               />
