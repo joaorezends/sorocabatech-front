@@ -28,20 +28,20 @@ function RouteComponent() {
   })
 
   return (
-    <div className="min-h-screen bg-tertiary">
+    <div className="min-h-screen bg-primary-light">
       <div className="flex flex-col max-w-xl mx-auto py-16 px-4">
         <img className="mx-auto rounded-full w-24 h-24" src={logo} alt="sorocaba.tech logo" width="96" height="96" />
-        <h1 className="mt-4 text-center text-lg font-bold text-primary">@sorocaba.tech</h1>
+        <h1 className="mt-4 text-center text-lg font-bold text-primary-dark">@sorocaba.tech</h1>
         <ul className="flex justify-center gap-5 mt-5">
           {socials?.map((social, index) =>
             <li key={index}>
               {social.type === SocialType.WHATSAPP && (
-                <a className="text-3xl text-primary" href={'https://api.whatsapp.com/send?phone=' + social.value} target="_blank" rel="noopener">
+                <a className="text-3xl text-primary-dark" href={'https://api.whatsapp.com/send?phone=' + social.value} target="_blank" rel="noopener">
                   <Icon name="whatsapp" width={32} height={32} />
                 </a>
               )}
               {social.type === SocialType.INSTAGRAM && (
-                <a className="text-3xl text-primary" href={'https://instagram.com/' + social.value} target="_blank" rel="noopener">
+                <a className="text-3xl text-primary-dark" href={'https://instagram.com/' + social.value} target="_blank" rel="noopener">
                   <Icon name="instagram" width={32} height={32} />
                 </a>
               )}
@@ -51,7 +51,7 @@ function RouteComponent() {
         <ul className="flex flex-col gap-4 mt-9">
           {links?.map((link, index) =>
             <li key={index}>
-              <a className="button button-quaternary button-lg" href={link.url} target="_blank" rel="noopener">
+              <a className="button button-secondary button-lg" href={link.url} target="_blank" rel="noopener">
                 {link.name}
               </a>
             </li>

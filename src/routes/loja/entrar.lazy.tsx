@@ -34,7 +34,7 @@ function RouteComponent() {
   })
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-tertiary">
+    <div className="flex justify-center items-center min-h-screen bg-primary-light">
       <div className="flex flex-col max-w-md py-16 px-20 bg-white shadow">
         <img className="mx-auto rounded-full w-24 h-24" src={logo} alt="sorocaba.tech logo" width="96" height="96" />
         <form

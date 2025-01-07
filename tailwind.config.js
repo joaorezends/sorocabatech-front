@@ -9,17 +9,29 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#1f2044',
-        secondary: '#2e93ee',
-        tertiary: '#f3f9ff',
-        quaternary: '#ffcf00'
+        primary: {
+          DEFAULT: '#2e93ee',
+          dark: '#1f2044',
+          light: '#f3f9ff',
+        },
+        secondary: '#ffcf00',
       }
     },
   },
   plugins: [
     plugin(function({ addComponents, theme }) {
       addComponents({
+        '.label': {
+          display: 'block',
+          marginBottom: theme('spacing.[0.5]'),
+          color: theme('colors.primary.dark'),
+          fontSize: theme('fontSize.sm'),
+          fontWeight: theme('fontWeight.semibold'),
+        },
+
         '.input': {
+          display: 'block',
+          width: '100%',
           paddingTop: theme('spacing.3'),
           paddingInlineEnd: theme('spacing.3'),
           paddingBottom: theme('spacing.3'),
@@ -43,19 +55,14 @@ export default {
           borderColor: theme('colors.transparent'),
         },
         '.button-primary': {
-          backgroundColor: theme('colors.primary'),
+          backgroundColor: theme('colors.primary.DEFAULT'),
           color: theme('colors.white'),
-          borderColor: theme('colors.primary'),
+          borderColor: theme('colors.primary.DEFAULT'),
         },
         '.button-secondary': {
           backgroundColor: theme('colors.secondary'),
-          color: theme('colors.white'),
+          color: theme('colors.primary.dark'),
           borderColor: theme('colors.secondary'),
-        },
-        '.button-quaternary': {
-          backgroundColor: theme('colors.quaternary'),
-          color: theme('colors.primary'),
-          borderColor: theme('colors.quaternary'),
         },
         '.button-lg': {
           paddingTop: theme('spacing.[3.5]'),
