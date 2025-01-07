@@ -1,14 +1,17 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/admin/_auth')({
+export const Route = createFileRoute('/loja/_auth')({
   beforeLoad: async ({ location }) => {
-    const response = await fetch(import.meta.env.VITE_API_URL + '/users/auth/session', {
-      credentials: 'include'
-    })
+    const response = await fetch(
+      import.meta.env.VITE_API_URL + '/customers/auth/session',
+      {
+        credentials: 'include',
+      },
+    )
 
     if (!response.ok) {
       throw redirect({
-        to: '/admin/login',
+        to: '/loja/entrar',
         search: {
           redirect: location.href,
         },

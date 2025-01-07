@@ -1,12 +1,27 @@
 import { useForm } from '@tanstack/react-form'
 import { useMutation } from '@tanstack/react-query'
-import { createLazyFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 import { useCallback, useState } from 'react'
 import z from 'zod'
 import Icon from '../../components/Icon'
 import { Credentials } from '../../types'
 
-export const Route = createLazyFileRoute('/loja/entrar')({
+export const Route = createFileRoute('/loja/entrar')({
+  validateSearch: z.object({
+    redirect: z.string().optional().catch(''),
+  }),
+  beforeLoad: async ({ search }) => {
+    const response = await fetch(
+      import.meta.env.VITE_API_URL + '/customers/auth/session',
+      {
+        credentials: 'include',
+      },
+    )
+
+    if (response.ok) {
+      throw redirect({ to: search.redirect || '/loja' })
+    }
+  },
   component: RouteComponent,
 })
 
@@ -16,6 +31,9 @@ function RouteComponent() {
   const toggleShowPassword = useCallback(() => {
     setShowPassword(!showPassword)
   }, [showPassword])
+
+  const navigate = Route.useNavigate()
+  const search = Route.useSearch()
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (credentials: Credentials) => {
@@ -30,7 +48,10 @@ function RouteComponent() {
           body: JSON.stringify(credentials),
         },
       )
-      console.log(response)
+
+      if (response.ok) {
+        await navigate({ to: search.redirect || '/loja' })
+      }
     },
     onSuccess: () => {},
   })
@@ -42,7 +63,9 @@ function RouteComponent() {
     },
     validators: {
       onBlur: z.object({
-        email: z.string({ required_error: 'E-mail é obrigatório.' }).email({ message: 'E-mail inválido.' }),
+        email: z
+          .string({ required_error: 'E-mail é obrigatório.' })
+          .email({ message: 'E-mail inválido.' }),
         password: z.string({ required_error: 'Senha é obrigatório.' }),
       }),
     },
@@ -94,7 +117,15 @@ function RouteComponent() {
                       />
                       {field.state.meta.errors.length ? (
                         <em className="block text-red-500 text-sm mt-0.5">
-                          {[...field.state.meta.errors, ...field.state.meta.errors].map((error) => <>{error}<br /></>)}
+                          {[
+                            ...field.state.meta.errors,
+                            ...field.state.meta.errors,
+                          ].map((error) => (
+                            <>
+                              {error}
+                              <br />
+                            </>
+                          ))}
                         </em>
                       ) : null}
                     </>
@@ -125,7 +156,15 @@ function RouteComponent() {
                         />
                         {field.state.meta.errors.length ? (
                           <em className="block text-red-500 text-sm mt-0.5">
-                            {[...field.state.meta.errors, ...field.state.meta.errors].map((error) => <>{error}<br /></>)}
+                            {[
+                              ...field.state.meta.errors,
+                              ...field.state.meta.errors,
+                            ].map((error) => (
+                              <>
+                                {error}
+                                <br />
+                              </>
+                            ))}
                           </em>
                         ) : null}
                       </>
@@ -137,7 +176,9 @@ function RouteComponent() {
                     tabIndex={-1}
                     onClick={() => toggleShowPassword()}
                   >
-                    {!showPassword && <Icon name="eye" width={20} height={20} />}
+                    {!showPassword && (
+                      <Icon name="eye" width={20} height={20} />
+                    )}
                     {showPassword && (
                       <Icon name="eyeSlash" width={20} height={20} />
                     )}
@@ -158,7 +199,10 @@ function RouteComponent() {
                 )}
               />
 
-              <Link className="block mt-4 text-primary text-sm text-center font-semibold hover:text-primary-dark" to="/loja/recuperar-senha">
+              <Link
+                className="block mt-4 text-primary text-sm text-center font-semibold hover:text-primary-dark"
+                to="/loja/recuperar-senha"
+              >
                 Esqueceu sua senha?
               </Link>
             </form>
