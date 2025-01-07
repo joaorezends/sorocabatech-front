@@ -1,36 +1,59 @@
 import { useForm } from '@tanstack/react-form'
 import { useMutation } from '@tanstack/react-query'
-import { createLazyFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useCallback, useState } from 'react'
 import z from 'zod'
 import Icon from '../../components/Icon'
 import { Credentials } from '../../types'
 
-export const Route = createLazyFileRoute('/admin/login')({
+export const Route = createFileRoute('/admin/login')({
+  validateSearch: z.object({
+    redirect: z.string().optional().catch(''),
+  }),
+  beforeLoad: async ({ search }) => {
+    const response = await fetch(
+      import.meta.env.VITE_API_URL + '/users/auth/session',
+      {
+        credentials: 'include',
+      },
+    )
+
+    if (response.ok) {
+      throw redirect({ to: search.redirect || '/admin' })
+    }
+  },
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false)
 
   const toggleShowPassword = useCallback(() => {
-    setShowPassword(!showPassword);
+    setShowPassword(!showPassword)
   }, [showPassword])
+
+  const navigate = Route.useNavigate();
+  const search = Route.useSearch()
 
   const { mutate } = useMutation({
     mutationFn: async (credentials: Credentials) => {
-      const response = await fetch(import.meta.env.VITE_API_URL + '/users/auth/login', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'content-type': 'application/json',
+      const response = await fetch(
+        import.meta.env.VITE_API_URL + '/users/auth/login',
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify(credentials),
         },
-        body: JSON.stringify(credentials),
-      })
-      console.log(response);
+      )
+      
+      if (response.ok) {
+        await navigate({ to: search.redirect || '/admin' })
+      }
     },
-    onSuccess: () => {
-    },
+    onSuccess: () => {},
   })
 
   const { handleSubmit, Field, Subscribe } = useForm({
@@ -40,13 +63,15 @@ function RouteComponent() {
     },
     validators: {
       onBlur: z.object({
-        email: z.string({ required_error: 'E-mail é obrigatório.' }).email({ message: 'E-mail inválido.' }),
+        email: z
+          .string({ required_error: 'E-mail é obrigatório.' })
+          .email({ message: 'E-mail inválido.' }),
         password: z.string({ required_error: 'Senha é obrigatório.' }),
       }),
     },
     onSubmit: async ({ value }) => mutate(value),
   })
-  
+
   return (
     <div className="bg-primary-dark">
       <main className="flex justify-center w-2/5 min-h-screen bg-white">
@@ -58,14 +83,16 @@ function RouteComponent() {
           </header>
 
           <section>
-            <h2 className="text-primary-dark text-2xl font-semibold">Bem-vindo!</h2>
+            <h2 className="text-primary-dark text-2xl font-semibold">
+              Bem-vindo!
+            </h2>
 
             <form
               className="mt-14"
               onSubmit={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                handleSubmit();
+                e.preventDefault()
+                e.stopPropagation()
+                handleSubmit()
               }}
             >
               <div className="mb-5">
@@ -90,7 +117,15 @@ function RouteComponent() {
                       />
                       {field.state.meta.errors.length ? (
                         <em className="block text-red-500 text-sm mt-0.5">
-                          {[...field.state.meta.errors, ...field.state.meta.errors].map((error) => <>{error}<br /></>)}
+                          {[
+                            ...field.state.meta.errors,
+                            ...field.state.meta.errors,
+                          ].map((error) => (
+                            <>
+                              {error}
+                              <br />
+                            </>
+                          ))}
                         </em>
                       ) : null}
                     </>
@@ -121,7 +156,15 @@ function RouteComponent() {
                         />
                         {field.state.meta.errors.length ? (
                           <em className="block text-red-500 text-sm mt-0.5">
-                            {[...field.state.meta.errors, ...field.state.meta.errors].map((error) => <>{error}<br /></>)}
+                            {[
+                              ...field.state.meta.errors,
+                              ...field.state.meta.errors,
+                            ].map((error) => (
+                              <>
+                                {error}
+                                <br />
+                              </>
+                            ))}
                           </em>
                         ) : null}
                       </>
@@ -133,7 +176,9 @@ function RouteComponent() {
                     tabIndex={-1}
                     onClick={() => toggleShowPassword()}
                   >
-                    {!showPassword && <Icon name="eye" width={20} height={20} />}
+                    {!showPassword && (
+                      <Icon name="eye" width={20} height={20} />
+                    )}
                     {showPassword && (
                       <Icon name="eyeSlash" width={20} height={20} />
                     )}
@@ -144,7 +189,11 @@ function RouteComponent() {
               <Subscribe
                 selector={(state) => [state.canSubmit, state.isSubmitting]}
                 children={([canSubmit, isSubmitting]) => (
-                  <button className="button button-primary w-full" type="submit" disabled={!canSubmit}>
+                  <button
+                    className="button button-primary w-full"
+                    type="submit"
+                    disabled={!canSubmit}
+                  >
                     {isSubmitting ? '...' : 'Entrar'}
                   </button>
                 )}

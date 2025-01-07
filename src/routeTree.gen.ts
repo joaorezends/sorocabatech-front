@@ -13,17 +13,25 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as AdminLoginImport } from './routes/admin/login'
+import { Route as AdminAuthImport } from './routes/admin/_auth'
 
 // Create Virtual Routes
 
+const AdminImport = createFileRoute('/admin')()
 const IndexLazyImport = createFileRoute('/')()
 const LojaIndexLazyImport = createFileRoute('/loja/')()
-const AdminIndexLazyImport = createFileRoute('/admin/')()
 const LojaRecuperarSenhaLazyImport = createFileRoute('/loja/recuperar-senha')()
 const LojaEntrarLazyImport = createFileRoute('/loja/entrar')()
-const AdminLoginLazyImport = createFileRoute('/admin/login')()
+const AdminAuthIndexLazyImport = createFileRoute('/admin/_auth/')()
 
 // Create/Update Routes
+
+const AdminRoute = AdminImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexLazyRoute = IndexLazyImport.update({
   id: '/',
@@ -36,12 +44,6 @@ const LojaIndexLazyRoute = LojaIndexLazyImport.update({
   path: '/loja/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/loja/index.lazy').then((d) => d.Route))
-
-const AdminIndexLazyRoute = AdminIndexLazyImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/admin/index.lazy').then((d) => d.Route))
 
 const LojaRecuperarSenhaLazyRoute = LojaRecuperarSenhaLazyImport.update({
   id: '/loja/recuperar-senha',
@@ -57,11 +59,24 @@ const LojaEntrarLazyRoute = LojaEntrarLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/loja/entrar.lazy').then((d) => d.Route))
 
-const AdminLoginLazyRoute = AdminLoginLazyImport.update({
-  id: '/admin/login',
-  path: '/admin/login',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/admin/login.lazy').then((d) => d.Route))
+const AdminLoginRoute = AdminLoginImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRoute,
+} as any)
+
+const AdminAuthRoute = AdminAuthImport.update({
+  id: '/_auth',
+  getParentRoute: () => AdminRoute,
+} as any)
+
+const AdminAuthIndexLazyRoute = AdminAuthIndexLazyImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminAuthRoute,
+} as any).lazy(() =>
+  import('./routes/admin/_auth.index.lazy').then((d) => d.Route),
+)
 
 // Populate the FileRoutesByPath interface
 
@@ -74,12 +89,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminImport
+      parentRoute: typeof rootRoute
+    }
+    '/admin/_auth': {
+      id: '/admin/_auth'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminAuthImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/login': {
       id: '/admin/login'
-      path: '/admin/login'
+      path: '/login'
       fullPath: '/admin/login'
-      preLoaderRoute: typeof AdminLoginLazyImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AdminLoginImport
+      parentRoute: typeof AdminImport
     }
     '/loja/entrar': {
       id: '/loja/entrar'
@@ -95,13 +124,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LojaRecuperarSenhaLazyImport
       parentRoute: typeof rootRoute
     }
-    '/admin/': {
-      id: '/admin/'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminIndexLazyImport
-      parentRoute: typeof rootRoute
-    }
     '/loja/': {
       id: '/loja/'
       path: '/loja'
@@ -109,82 +131,117 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LojaIndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/admin/_auth/': {
+      id: '/admin/_auth/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminAuthIndexLazyImport
+      parentRoute: typeof AdminAuthImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface AdminAuthRouteChildren {
+  AdminAuthIndexLazyRoute: typeof AdminAuthIndexLazyRoute
+}
+
+const AdminAuthRouteChildren: AdminAuthRouteChildren = {
+  AdminAuthIndexLazyRoute: AdminAuthIndexLazyRoute,
+}
+
+const AdminAuthRouteWithChildren = AdminAuthRoute._addFileChildren(
+  AdminAuthRouteChildren,
+)
+
+interface AdminRouteChildren {
+  AdminAuthRoute: typeof AdminAuthRouteWithChildren
+  AdminLoginRoute: typeof AdminLoginRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAuthRoute: AdminAuthRouteWithChildren,
+  AdminLoginRoute: AdminLoginRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
-  '/admin/login': typeof AdminLoginLazyRoute
+  '/admin': typeof AdminAuthRouteWithChildren
+  '/admin/login': typeof AdminLoginRoute
   '/loja/entrar': typeof LojaEntrarLazyRoute
   '/loja/recuperar-senha': typeof LojaRecuperarSenhaLazyRoute
-  '/admin': typeof AdminIndexLazyRoute
   '/loja': typeof LojaIndexLazyRoute
+  '/admin/': typeof AdminAuthIndexLazyRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
-  '/admin/login': typeof AdminLoginLazyRoute
+  '/admin': typeof AdminAuthIndexLazyRoute
+  '/admin/login': typeof AdminLoginRoute
   '/loja/entrar': typeof LojaEntrarLazyRoute
   '/loja/recuperar-senha': typeof LojaRecuperarSenhaLazyRoute
-  '/admin': typeof AdminIndexLazyRoute
   '/loja': typeof LojaIndexLazyRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
-  '/admin/login': typeof AdminLoginLazyRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/admin/_auth': typeof AdminAuthRouteWithChildren
+  '/admin/login': typeof AdminLoginRoute
   '/loja/entrar': typeof LojaEntrarLazyRoute
   '/loja/recuperar-senha': typeof LojaRecuperarSenhaLazyRoute
-  '/admin/': typeof AdminIndexLazyRoute
   '/loja/': typeof LojaIndexLazyRoute
+  '/admin/_auth/': typeof AdminAuthIndexLazyRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/admin/login'
     | '/loja/entrar'
     | '/loja/recuperar-senha'
-    | '/admin'
     | '/loja'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/admin/login'
     | '/loja/entrar'
     | '/loja/recuperar-senha'
-    | '/admin'
     | '/loja'
   id:
     | '__root__'
     | '/'
+    | '/admin'
+    | '/admin/_auth'
     | '/admin/login'
     | '/loja/entrar'
     | '/loja/recuperar-senha'
-    | '/admin/'
     | '/loja/'
+    | '/admin/_auth/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
-  AdminLoginLazyRoute: typeof AdminLoginLazyRoute
+  AdminRoute: typeof AdminRouteWithChildren
   LojaEntrarLazyRoute: typeof LojaEntrarLazyRoute
   LojaRecuperarSenhaLazyRoute: typeof LojaRecuperarSenhaLazyRoute
-  AdminIndexLazyRoute: typeof AdminIndexLazyRoute
   LojaIndexLazyRoute: typeof LojaIndexLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
-  AdminLoginLazyRoute: AdminLoginLazyRoute,
+  AdminRoute: AdminRouteWithChildren,
   LojaEntrarLazyRoute: LojaEntrarLazyRoute,
   LojaRecuperarSenhaLazyRoute: LojaRecuperarSenhaLazyRoute,
-  AdminIndexLazyRoute: AdminIndexLazyRoute,
   LojaIndexLazyRoute: LojaIndexLazyRoute,
 }
 
@@ -199,18 +256,32 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/admin/login",
+        "/admin",
         "/loja/entrar",
         "/loja/recuperar-senha",
-        "/admin/",
         "/loja/"
       ]
     },
     "/": {
       "filePath": "index.lazy.tsx"
     },
+    "/admin": {
+      "filePath": "admin",
+      "children": [
+        "/admin/_auth",
+        "/admin/login"
+      ]
+    },
+    "/admin/_auth": {
+      "filePath": "admin/_auth.tsx",
+      "parent": "/admin",
+      "children": [
+        "/admin/_auth/"
+      ]
+    },
     "/admin/login": {
-      "filePath": "admin/login.lazy.tsx"
+      "filePath": "admin/login.tsx",
+      "parent": "/admin"
     },
     "/loja/entrar": {
       "filePath": "loja/entrar.lazy.tsx"
@@ -218,11 +289,12 @@ export const routeTree = rootRoute
     "/loja/recuperar-senha": {
       "filePath": "loja/recuperar-senha.lazy.tsx"
     },
-    "/admin/": {
-      "filePath": "admin/index.lazy.tsx"
-    },
     "/loja/": {
       "filePath": "loja/index.lazy.tsx"
+    },
+    "/admin/_auth/": {
+      "filePath": "admin/_auth.index.lazy.tsx",
+      "parent": "/admin/_auth"
     }
   }
 }
