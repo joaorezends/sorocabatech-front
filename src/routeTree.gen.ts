@@ -27,6 +27,9 @@ const LojaIndexLazyImport = createFileRoute('/loja/')()
 const LojaRecuperarSenhaLazyImport = createFileRoute('/loja/recuperar-senha')()
 const AdminAuthIndexLazyImport = createFileRoute('/admin/_auth/')()
 const LojaAuthContaIndexLazyImport = createFileRoute('/loja/_auth/conta/')()
+const AdminAuthCatalogCategoryListLazyImport = createFileRoute(
+  '/admin/_auth/catalog/category/list',
+)()
 
 // Create/Update Routes
 
@@ -99,6 +102,17 @@ const LojaAuthContaIndexLazyRoute = LojaAuthContaIndexLazyImport.update({
 } as any).lazy(() =>
   import('./routes/loja/_auth/conta/index.lazy').then((d) => d.Route),
 )
+
+const AdminAuthCatalogCategoryListLazyRoute =
+  AdminAuthCatalogCategoryListLazyImport.update({
+    id: '/catalog/category/list',
+    path: '/catalog/category/list',
+    getParentRoute: () => AdminAuthRoute,
+  } as any).lazy(() =>
+    import('./routes/admin/_auth/catalog/category/list.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 // Populate the FileRoutesByPath interface
 
@@ -181,6 +195,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LojaAuthContaIndexLazyImport
       parentRoute: typeof LojaAuthImport
     }
+    '/admin/_auth/catalog/category/list': {
+      id: '/admin/_auth/catalog/category/list'
+      path: '/catalog/category/list'
+      fullPath: '/admin/catalog/category/list'
+      preLoaderRoute: typeof AdminAuthCatalogCategoryListLazyImport
+      parentRoute: typeof AdminAuthImport
+    }
   }
 }
 
@@ -188,10 +209,12 @@ declare module '@tanstack/react-router' {
 
 interface AdminAuthRouteChildren {
   AdminAuthIndexLazyRoute: typeof AdminAuthIndexLazyRoute
+  AdminAuthCatalogCategoryListLazyRoute: typeof AdminAuthCatalogCategoryListLazyRoute
 }
 
 const AdminAuthRouteChildren: AdminAuthRouteChildren = {
   AdminAuthIndexLazyRoute: AdminAuthIndexLazyRoute,
+  AdminAuthCatalogCategoryListLazyRoute: AdminAuthCatalogCategoryListLazyRoute,
 }
 
 const AdminAuthRouteWithChildren = AdminAuthRoute._addFileChildren(
@@ -248,6 +271,7 @@ export interface FileRoutesByFullPath {
   '/loja/': typeof LojaIndexLazyRoute
   '/admin/': typeof AdminAuthIndexLazyRoute
   '/loja/conta': typeof LojaAuthContaIndexLazyRoute
+  '/admin/catalog/category/list': typeof AdminAuthCatalogCategoryListLazyRoute
 }
 
 export interface FileRoutesByTo {
@@ -258,6 +282,7 @@ export interface FileRoutesByTo {
   '/loja/entrar': typeof LojaEntrarRoute
   '/loja/recuperar-senha': typeof LojaRecuperarSenhaLazyRoute
   '/loja/conta': typeof LojaAuthContaIndexLazyRoute
+  '/admin/catalog/category/list': typeof AdminAuthCatalogCategoryListLazyRoute
 }
 
 export interface FileRoutesById {
@@ -273,6 +298,7 @@ export interface FileRoutesById {
   '/loja/': typeof LojaIndexLazyRoute
   '/admin/_auth/': typeof AdminAuthIndexLazyRoute
   '/loja/_auth/conta/': typeof LojaAuthContaIndexLazyRoute
+  '/admin/_auth/catalog/category/list': typeof AdminAuthCatalogCategoryListLazyRoute
 }
 
 export interface FileRouteTypes {
@@ -287,6 +313,7 @@ export interface FileRouteTypes {
     | '/loja/'
     | '/admin/'
     | '/loja/conta'
+    | '/admin/catalog/category/list'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -296,6 +323,7 @@ export interface FileRouteTypes {
     | '/loja/entrar'
     | '/loja/recuperar-senha'
     | '/loja/conta'
+    | '/admin/catalog/category/list'
   id:
     | '__root__'
     | '/'
@@ -309,6 +337,7 @@ export interface FileRouteTypes {
     | '/loja/'
     | '/admin/_auth/'
     | '/loja/_auth/conta/'
+    | '/admin/_auth/catalog/category/list'
   fileRoutesById: FileRoutesById
 }
 
@@ -353,7 +382,8 @@ export const routeTree = rootRoute
       "filePath": "admin/_auth.tsx",
       "parent": "/admin",
       "children": [
-        "/admin/_auth/"
+        "/admin/_auth/",
+        "/admin/_auth/catalog/category/list"
       ]
     },
     "/admin/login": {
@@ -395,6 +425,10 @@ export const routeTree = rootRoute
     "/loja/_auth/conta/": {
       "filePath": "loja/_auth/conta/index.lazy.tsx",
       "parent": "/loja/_auth"
+    },
+    "/admin/_auth/catalog/category/list": {
+      "filePath": "admin/_auth/catalog/category/list.lazy.tsx",
+      "parent": "/admin/_auth"
     }
   }
 }
