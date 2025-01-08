@@ -24,7 +24,7 @@ export default {
         '.label': {
           display: 'block',
           marginBottom: theme('spacing.[0.5]'),
-          color: theme('colors.primary.dark'),
+          color: theme('colors.neutral.600'),
           fontSize: theme('fontSize.sm'),
           fontWeight: theme('fontWeight.semibold'),
         },
@@ -38,7 +38,21 @@ export default {
           paddingInlineStart: theme('spacing.3'),
           fontSize: theme('fontSize.base'),
           borderWidth: theme('borderWidth.DEFAULT'),
-          borderColor: theme('colors.neutral.400'),
+          borderColor: theme('colors.neutral.300'),
+          borderRadius: theme('borderRadius.DEFAULT'),
+        },
+
+        '.textarea': {
+          display: 'block',
+          width: '100%',
+          paddingTop: theme('spacing.3'),
+          paddingInlineEnd: theme('spacing.3'),
+          paddingBottom: theme('spacing.3'),
+          paddingInlineStart: theme('spacing.3'),
+          fontSize: theme('fontSize.base'),
+          borderWidth: theme('borderWidth.DEFAULT'),
+          borderColor: theme('colors.neutral.300'),
+          borderRadius: theme('borderRadius.DEFAULT'),
         },
 
         '.button': {
@@ -53,6 +67,7 @@ export default {
           lineHeight: theme('lineHeight.6'),
           borderWidth: theme('borderWidth.DEFAULT'),
           borderColor: theme('colors.transparent'),
+          borderRadius: theme('borderRadius.DEFAULT'),
         },
         '.button:disabled': {
           opacity: '0.5',

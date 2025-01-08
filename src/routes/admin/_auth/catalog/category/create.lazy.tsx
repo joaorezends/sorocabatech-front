@@ -4,15 +4,19 @@ import { Category } from '../../../../../types'
 import { useMutation } from '@tanstack/react-query'
 import { z } from 'zod'
 
-export const Route = createLazyFileRoute(
-  '/admin/_auth/catalog/category/create',
-)({
+export const Route = createLazyFileRoute('/admin/_auth/catalog/category/create')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
   const { mutate, isPending } = useMutation({
-    mutationFn: async (credentials: Partial<Category>) => {
+    mutationFn: async (data: Partial<Category>) => {
+      (Object.keys(data) as (keyof Category)[]).forEach((key) => {
+        if (data[key] === '') {
+          delete data[key]
+        }
+      })
+
       const response = await fetch(
         import.meta.env.VITE_API_URL + '/catalog/categories',
         {
@@ -21,7 +25,7 @@ function RouteComponent() {
           headers: {
             'content-type': 'application/json',
           },
-          body: JSON.stringify(credentials),
+          body: JSON.stringify(data),
         },
       )
       
@@ -30,10 +34,16 @@ function RouteComponent() {
   })
 
   const { handleSubmit, Field, Subscribe } = useForm({
+    defaultValues: {
+      name: '',
+      seoTitle: '',
+      seoDescription: '',
+    },
     validators: {
       onBlur: z.object({
-        name: z.string({ required_error: 'Nome é obrigatório.' }),
-        seoTitle: z.string().max(70).optional(),
+        name: z.string(),
+        seoTitle: z.string().max(70, 'A string deve conter no máximo 70 caracteres'),
+        seoDescription: z.string().max(250, 'A string deve conter no máximo 250 caracteres'),
       }),
     },
     onSubmit: async ({ value }) => mutate(value),
@@ -61,76 +71,104 @@ function RouteComponent() {
       >
         <section className="bg-white border rounded">
           <header className="py-6 px-10 border-b">
-            <h2 className="text-primary-dark text-xl font-semibold">
+            <h2 className="text-neutral-700 text-xl font-semibold">
               Informações principais
             </h2>
           </header>
 
           <div className="py-6 px-10">
-            <div className="mb-5">
-              <label className="label" htmlFor="name">
-                Nome da categoria *
-              </label>
-              <Field
-                name="name"
-                children={(field) => (
-                  <>
-                    <input
-                      id="name"
-                      className="input"
-                      name={field.name}
-                      value={field.state.value}
-                      required
-                      placeholder="Ex. Carregadores"
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
-                    {field.state.meta.errors.length ? (
-                      <em className="block text-red-500 text-sm mt-0.5">
-                        {field.state.meta.errors.join(' ')}
-                      </em>
-                    ) : null}
-                  </>
-                )}
-              />
-            </div>
+            <Field
+              name="name"
+              children={(field) => (
+                <div className="mb-5">
+                  <label className="label" htmlFor="name">
+                    Nome da categoria *
+                  </label>
+                  <input
+                    id="name"
+                    className="input"
+                    name={field.name}
+                    value={field.state.value}
+                    required
+                    placeholder="Ex. Carregadores"
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                  {field.state.meta.errors.length ? (
+                    <em className="block text-red-500 text-sm mt-0.5">
+                      {field.state.meta.errors.join(' ')}
+                    </em>
+                  ) : null}
+                </div>
+              )}
+            />
           </div>
         </section>
 
         <section className="mt-10 bg-white border rounded">
           <header className="py-6 px-10 border-b">
-            <h2 className="text-primary-dark text-xl font-semibold">
+            <h2 className="text-neutral-700 text-xl font-semibold">
               SEO
             </h2>
           </header>
 
-          <div className="py-6 px-10">
-            <div className="mb-5">
-              <label className="label" htmlFor="seoTitle">
-                Tag Title
-              </label>
-              <Field
-                name="seoTitle"
-                children={(field) => (
-                  <>
-                    <input
-                      id="seoTitle"
-                      className="input"
-                      name={field.name}
-                      value={field.state.value}
-                      required
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                    />
-                    {field.state.meta.errors.length ? (
-                      <em className="block text-red-500 text-sm mt-0.5">
-                        {field.state.meta.errors.join(' ')}
-                      </em>
-                    ) : null}
-                  </>
-                )}
-              />
-            </div>
+          <div className="w-2/3 py-6 px-10">
+            <Field
+              name="seoTitle"
+              children={(field) => (
+                <div className="mb-5">
+                  <div className="flex items-center justify-between">
+                    <label className="label" htmlFor="seoTitle">
+                      Tag Title
+                    </label>
+                    <span className="text-xs">{field.state.value.length} de 70 caracteres</span>
+                  </div>
+                  <input
+                    id="seoTitle"
+                    className="input"
+                    name={field.name}
+                    value={field.state.value}
+                    maxLength={70}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                  {field.state.meta.errors.length ? (
+                    <em className="block text-red-500 text-sm mt-0.5">
+                      {field.state.meta.errors.join(' ')}
+                    </em>
+                  ) : null}
+                </div>
+              )}
+            />
+
+            <Field
+              name="seoDescription"
+              children={(field) => (
+                <div className="mb-5">
+                  <div className="flex items-center justify-between">
+                    <label className="label" htmlFor="seoDescription">
+                      Meta Tag Description
+                    </label>
+                    <span className="text-xs">{field.state.value.length} de 250 caracteres</span>
+                  </div>
+                  <textarea
+                    id="seoDescription"
+                    className="textarea"
+                    name={field.name}
+                    value={field.state.value}
+                    maxLength={250}
+                    rows={3}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                  {field.state.meta.errors.length ? (
+                    <em className="block text-red-500 text-sm mt-0.5">
+                      {field.state.meta.errors.join(' ')}
+                    </em>
+                  ) : null}
+                </div>
+              )}
+            />
           </div>
         </section>
 
