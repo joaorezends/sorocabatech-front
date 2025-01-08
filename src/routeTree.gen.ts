@@ -30,6 +30,9 @@ const LojaAuthContaIndexLazyImport = createFileRoute('/loja/_auth/conta/')()
 const AdminAuthCatalogCategoryListLazyImport = createFileRoute(
   '/admin/_auth/catalog/category/list',
 )()
+const AdminAuthCatalogCategoryCreateLazyImport = createFileRoute(
+  '/admin/_auth/catalog/category/create',
+)()
 
 // Create/Update Routes
 
@@ -110,6 +113,17 @@ const AdminAuthCatalogCategoryListLazyRoute =
     getParentRoute: () => AdminAuthRoute,
   } as any).lazy(() =>
     import('./routes/admin/_auth/catalog/category/list.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const AdminAuthCatalogCategoryCreateLazyRoute =
+  AdminAuthCatalogCategoryCreateLazyImport.update({
+    id: '/catalog/category/create',
+    path: '/catalog/category/create',
+    getParentRoute: () => AdminAuthRoute,
+  } as any).lazy(() =>
+    import('./routes/admin/_auth/catalog/category/create.lazy').then(
       (d) => d.Route,
     ),
   )
@@ -195,6 +209,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LojaAuthContaIndexLazyImport
       parentRoute: typeof LojaAuthImport
     }
+    '/admin/_auth/catalog/category/create': {
+      id: '/admin/_auth/catalog/category/create'
+      path: '/catalog/category/create'
+      fullPath: '/admin/catalog/category/create'
+      preLoaderRoute: typeof AdminAuthCatalogCategoryCreateLazyImport
+      parentRoute: typeof AdminAuthImport
+    }
     '/admin/_auth/catalog/category/list': {
       id: '/admin/_auth/catalog/category/list'
       path: '/catalog/category/list'
@@ -209,11 +230,14 @@ declare module '@tanstack/react-router' {
 
 interface AdminAuthRouteChildren {
   AdminAuthIndexLazyRoute: typeof AdminAuthIndexLazyRoute
+  AdminAuthCatalogCategoryCreateLazyRoute: typeof AdminAuthCatalogCategoryCreateLazyRoute
   AdminAuthCatalogCategoryListLazyRoute: typeof AdminAuthCatalogCategoryListLazyRoute
 }
 
 const AdminAuthRouteChildren: AdminAuthRouteChildren = {
   AdminAuthIndexLazyRoute: AdminAuthIndexLazyRoute,
+  AdminAuthCatalogCategoryCreateLazyRoute:
+    AdminAuthCatalogCategoryCreateLazyRoute,
   AdminAuthCatalogCategoryListLazyRoute: AdminAuthCatalogCategoryListLazyRoute,
 }
 
@@ -271,6 +295,7 @@ export interface FileRoutesByFullPath {
   '/loja/': typeof LojaIndexLazyRoute
   '/admin/': typeof AdminAuthIndexLazyRoute
   '/loja/conta': typeof LojaAuthContaIndexLazyRoute
+  '/admin/catalog/category/create': typeof AdminAuthCatalogCategoryCreateLazyRoute
   '/admin/catalog/category/list': typeof AdminAuthCatalogCategoryListLazyRoute
 }
 
@@ -282,6 +307,7 @@ export interface FileRoutesByTo {
   '/loja/entrar': typeof LojaEntrarRoute
   '/loja/recuperar-senha': typeof LojaRecuperarSenhaLazyRoute
   '/loja/conta': typeof LojaAuthContaIndexLazyRoute
+  '/admin/catalog/category/create': typeof AdminAuthCatalogCategoryCreateLazyRoute
   '/admin/catalog/category/list': typeof AdminAuthCatalogCategoryListLazyRoute
 }
 
@@ -298,6 +324,7 @@ export interface FileRoutesById {
   '/loja/': typeof LojaIndexLazyRoute
   '/admin/_auth/': typeof AdminAuthIndexLazyRoute
   '/loja/_auth/conta/': typeof LojaAuthContaIndexLazyRoute
+  '/admin/_auth/catalog/category/create': typeof AdminAuthCatalogCategoryCreateLazyRoute
   '/admin/_auth/catalog/category/list': typeof AdminAuthCatalogCategoryListLazyRoute
 }
 
@@ -313,6 +340,7 @@ export interface FileRouteTypes {
     | '/loja/'
     | '/admin/'
     | '/loja/conta'
+    | '/admin/catalog/category/create'
     | '/admin/catalog/category/list'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -323,6 +351,7 @@ export interface FileRouteTypes {
     | '/loja/entrar'
     | '/loja/recuperar-senha'
     | '/loja/conta'
+    | '/admin/catalog/category/create'
     | '/admin/catalog/category/list'
   id:
     | '__root__'
@@ -337,6 +366,7 @@ export interface FileRouteTypes {
     | '/loja/'
     | '/admin/_auth/'
     | '/loja/_auth/conta/'
+    | '/admin/_auth/catalog/category/create'
     | '/admin/_auth/catalog/category/list'
   fileRoutesById: FileRoutesById
 }
@@ -383,6 +413,7 @@ export const routeTree = rootRoute
       "parent": "/admin",
       "children": [
         "/admin/_auth/",
+        "/admin/_auth/catalog/category/create",
         "/admin/_auth/catalog/category/list"
       ]
     },
@@ -425,6 +456,10 @@ export const routeTree = rootRoute
     "/loja/_auth/conta/": {
       "filePath": "loja/_auth/conta/index.lazy.tsx",
       "parent": "/loja/_auth"
+    },
+    "/admin/_auth/catalog/category/create": {
+      "filePath": "admin/_auth/catalog/category/create.lazy.tsx",
+      "parent": "/admin/_auth"
     },
     "/admin/_auth/catalog/category/list": {
       "filePath": "admin/_auth/catalog/category/list.lazy.tsx",

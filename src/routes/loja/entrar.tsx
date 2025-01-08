@@ -53,14 +53,9 @@ function RouteComponent() {
         await navigate({ to: search.redirect || '/loja' })
       }
     },
-    onSuccess: () => {},
   })
 
   const { handleSubmit, Field, Subscribe } = useForm({
-    defaultValues: {
-      email: '',
-      password: '',
-    },
     validators: {
       onBlur: z.object({
         email: z
@@ -117,15 +112,7 @@ function RouteComponent() {
                       />
                       {field.state.meta.errors.length ? (
                         <em className="block text-red-500 text-sm mt-0.5">
-                          {[
-                            ...field.state.meta.errors,
-                            ...field.state.meta.errors,
-                          ].map((error) => (
-                            <>
-                              {error}
-                              <br />
-                            </>
-                          ))}
+                          {field.state.meta.errors.join(' ')}
                         </em>
                       ) : null}
                     </>
@@ -156,15 +143,7 @@ function RouteComponent() {
                         />
                         {field.state.meta.errors.length ? (
                           <em className="block text-red-500 text-sm mt-0.5">
-                            {[
-                              ...field.state.meta.errors,
-                              ...field.state.meta.errors,
-                            ].map((error) => (
-                              <>
-                                {error}
-                                <br />
-                              </>
-                            ))}
+                            {field.state.meta.errors.join(' ')}
                           </em>
                         ) : null}
                       </>

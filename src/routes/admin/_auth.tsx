@@ -47,49 +47,47 @@ const menu = [
 
 function RouteComponent() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="py-5 px-8 shadow-lg">
-        <h1 className="inline-block py-0.5 px-2 text-primary-dark text-lg font-bold">
+    <>
+      <header className="fixed top-0 start-0 z-10 flex items-center w-full h-16 px-8 bg-white shadow-lg">
+        <span className="inline-block py-0.5 px-2 bg-primary-dark text-primary-light text-lg font-bold">
           sorocaba<span className="text-primary">.tech</span>
-        </h1>
+        </span>
       </header>
-      <div className="flex flex-grow">
-        <aside className="py-2.5 bg-neutral-200">
-          <ul>
-            {menu.map((item, index) =>
-              <li key={index}>
-                <Link className="flex items-center gap-4 py-3 px-6 text-neutral-700 text-sm font-semibold" to={item.path ?? 'javascript:;'}>
-                  {item.icon}
-                  {item.name}
+      <aside className="fixed top-16 bottom-0 start-0 z-10 w-64 py-2.5 bg-neutral-200">
+        <ul>
+          {menu.map((item, index) =>
+            <li key={index}>
+              <Link className="flex items-center gap-4 py-3 px-6 text-neutral-700 text-sm font-semibold" to={item.path ?? 'javascript:;'}>
+                {item.icon}
+                {item.name}
 
-                  {item.children?.length &&
-                    <span className="ml-auto">
-                      <Icon name="chevronDown" width={14} height={14} />
-                    </span>
-                  }
-                </Link>
-
-                {item.children &&
-                  <ul className="mb-1">
-                    {item.children.map((subItem, i) =>
-                      <li key={i} className="py-1 pe-6 ps-14">
-                        <Link className="text-neutral-700 text-sm" to={subItem.path}>
-                          {subItem.name}
-                        </Link>
-                      </li>
-                    )}
-                  </ul>
+                {item.children?.length &&
+                  <span className="ml-auto">
+                    <Icon name="chevronDown" width={14} height={14} />
+                  </span>
                 }
-              </li>
-            )}
-          </ul>
-        </aside>
-        <div className="w-full py-6 px-10 bg-neutral-50">
-          <div className="max-w-5xl mx-auto">
-            <Outlet />
-          </div>
+              </Link>
+
+              {item.children &&
+                <ul className="mb-1">
+                  {item.children.map((subItem, i) =>
+                    <li key={i} className="py-1 pe-6 ps-14">
+                      <Link className="text-neutral-700 text-sm" to={subItem.path}>
+                        {subItem.name}
+                      </Link>
+                    </li>
+                  )}
+                </ul>
+              }
+            </li>
+          )}
+        </ul>
+      </aside>
+      <main className="relative flex justify-center mt-16 ml-64 py-6 px-10 bg-neutral-100">
+        <div className="w-full max-w-4xl">
+          <Outlet />
         </div>
-      </div>
-    </div>
+      </main>
+    </>
   )
 }

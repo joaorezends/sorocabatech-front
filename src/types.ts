@@ -1,3 +1,15 @@
+export interface Category {
+  id: number;
+  active: boolean;
+  name: string;
+  description: string | null;
+  featured: boolean;
+  seoTitle: string | null;
+  seoDescription: string | null;
+  seoUrl: string | null;
+  categoryId: string | null;
+}
+
 export interface Credentials {
   email: string;
   password: string;

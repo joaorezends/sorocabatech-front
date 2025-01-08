@@ -67,6 +67,11 @@ export default {
           color: theme('colors.primary.dark'),
           borderColor: theme('colors.secondary'),
         },
+        '.button-outline-primary-dark': {
+          backgroundColor: theme('colors.white'),
+          color: theme('colors.primary.dark'),
+          borderColor: theme('colors.primary.dark'),
+        },
         '.button-lg': {
           paddingTop: theme('spacing.[3.5]'),
           paddingBottom: theme('spacing.[3.5]'),
