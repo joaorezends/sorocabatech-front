@@ -36,12 +36,14 @@ function RouteComponent() {
   const { handleSubmit, Field, Subscribe } = useForm({
     defaultValues: {
       name: '',
+      description: '',
       seoTitle: '',
       seoDescription: '',
     },
     validators: {
       onBlur: z.object({
         name: z.string(),
+        description: z.string().max(4000, 'A string deve conter no máximo 4000 caracteres'),
         seoTitle: z.string().max(70, 'A string deve conter no máximo 70 caracteres'),
         seoDescription: z.string().max(250, 'A string deve conter no máximo 250 caracteres'),
       }),
@@ -91,6 +93,35 @@ function RouteComponent() {
                     value={field.state.value}
                     required
                     placeholder="Ex. Carregadores"
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                  {field.state.meta.errors.length ? (
+                    <em className="block text-red-500 text-sm mt-0.5">
+                      {field.state.meta.errors.join(' ')}
+                    </em>
+                  ) : null}
+                </div>
+              )}
+            />
+
+            <Field
+              name="description"
+              children={(field) => (
+                <div className="mb-5">
+                  <div className="flex items-center justify-between">
+                    <label className="label" htmlFor="description">
+                      Descrição
+                    </label>
+                    <span className="text-xs">{field.state.value.length} de 4000 caracteres</span>
+                  </div>
+                  <textarea
+                    id="description"
+                    className="textarea"
+                    name={field.name}
+                    value={field.state.value}
+                    maxLength={4000}
+                    rows={3}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                   />

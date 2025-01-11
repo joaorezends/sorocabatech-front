@@ -1,105 +1,60 @@
-const plugin = require('tailwindcss/plugin')
-
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: ["class"],
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)'
+      },
       colors: {
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        card: {
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))'
+        },
+        popover: {
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))'
+        },
         primary: {
-          DEFAULT: '#2e93ee',
-          dark: '#1f2044',
-          light: '#f3f9ff',
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))'
         },
-        secondary: '#ffcf00',
+        secondary: {
+          DEFAULT: 'hsl(var(--secondary))',
+          foreground: 'hsl(var(--secondary-foreground))'
+        },
+        muted: {
+          DEFAULT: 'hsl(var(--muted))',
+          foreground: 'hsl(var(--muted-foreground))'
+        },
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))'
+        },
+        destructive: {
+          DEFAULT: 'hsl(var(--destructive))',
+          foreground: 'hsl(var(--destructive-foreground))'
+        },
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        ring: 'hsl(var(--ring))',
+        chart: {
+          '1': 'hsl(var(--chart-1))',
+          '2': 'hsl(var(--chart-2))',
+          '3': 'hsl(var(--chart-3))',
+          '4': 'hsl(var(--chart-4))',
+          '5': 'hsl(var(--chart-5))'
+        }
       }
-    },
+    }
   },
-  plugins: [
-    plugin(function({ addComponents, theme }) {
-      addComponents({
-        '.label': {
-          display: 'block',
-          marginBottom: theme('spacing.[0.5]'),
-          color: theme('colors.neutral.600'),
-          fontSize: theme('fontSize.sm'),
-          fontWeight: theme('fontWeight.semibold'),
-        },
-
-        '.input': {
-          display: 'block',
-          width: '100%',
-          paddingTop: theme('spacing.3'),
-          paddingInlineEnd: theme('spacing.3'),
-          paddingBottom: theme('spacing.3'),
-          paddingInlineStart: theme('spacing.3'),
-          fontSize: theme('fontSize.base'),
-          borderWidth: theme('borderWidth.DEFAULT'),
-          borderColor: theme('colors.neutral.300'),
-          borderRadius: theme('borderRadius.DEFAULT'),
-        },
-
-        '.textarea': {
-          display: 'block',
-          width: '100%',
-          paddingTop: theme('spacing.3'),
-          paddingInlineEnd: theme('spacing.3'),
-          paddingBottom: theme('spacing.3'),
-          paddingInlineStart: theme('spacing.3'),
-          fontSize: theme('fontSize.base'),
-          borderWidth: theme('borderWidth.DEFAULT'),
-          borderColor: theme('colors.neutral.300'),
-          borderRadius: theme('borderRadius.DEFAULT'),
-        },
-
-        '.button': {
-          display: 'flex',
-          justifyContent: 'center',
-          paddingTop: theme('spacing.3'),
-          paddingInlineEnd: theme('spacing.6'),
-          paddingBottom: theme('spacing.3'),
-          paddingInlineStart: theme('spacing.6'),
-          fontSize: theme('fontSize.base'),
-          fontWeight: theme('fontWeight.bold'),
-          lineHeight: theme('lineHeight.6'),
-          borderWidth: theme('borderWidth.DEFAULT'),
-          borderColor: theme('colors.transparent'),
-          borderRadius: theme('borderRadius.DEFAULT'),
-        },
-        '.button:disabled': {
-          opacity: '0.5',
-        },
-        '.button-primary': {
-          backgroundColor: theme('colors.primary.DEFAULT'),
-          color: theme('colors.white'),
-          borderColor: theme('colors.primary.DEFAULT'),
-        },
-        '.button-secondary': {
-          backgroundColor: theme('colors.secondary'),
-          color: theme('colors.primary.dark'),
-          borderColor: theme('colors.secondary'),
-        },
-        '.button-outline-primary-dark': {
-          backgroundColor: theme('colors.white'),
-          color: theme('colors.primary.dark'),
-          borderColor: theme('colors.primary.dark'),
-        },
-        '.button-lg': {
-          paddingTop: theme('spacing.[3.5]'),
-          paddingBottom: theme('spacing.[3.5]'),
-          fontSize: theme('fontSize.lg'),
-          lineHeight: theme('lineHeight.7'),
-        },
-        '.button-xl': {
-          paddingTop: theme('spacing.4'),
-          paddingBottom: theme('spacing.4'),
-          fontSize: theme('fontSize.xl'),
-          lineHeight: theme('lineHeight.7'),
-        },
-      })
-    })
-  ],
+  plugins: [require("tailwindcss-animate")],
 }
