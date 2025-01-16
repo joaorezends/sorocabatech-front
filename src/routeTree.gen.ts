@@ -25,6 +25,7 @@ const AdminImport = createFileRoute('/admin')()
 const IndexLazyImport = createFileRoute('/')()
 const LojaIndexLazyImport = createFileRoute('/loja/')()
 const LojaRecuperarSenhaLazyImport = createFileRoute('/loja/recuperar-senha')()
+const LojaCadastrarLazyImport = createFileRoute('/loja/cadastrar')()
 const AdminAuthIndexLazyImport = createFileRoute('/admin/_auth/')()
 const LojaAuthContaIndexLazyImport = createFileRoute('/loja/_auth/conta/')()
 const AdminAuthCatalogCategoryListLazyImport = createFileRoute(
@@ -66,6 +67,14 @@ const LojaRecuperarSenhaLazyRoute = LojaRecuperarSenhaLazyImport.update({
   getParentRoute: () => LojaRoute,
 } as any).lazy(() =>
   import('./routes/loja/recuperar-senha.lazy').then((d) => d.Route),
+)
+
+const LojaCadastrarLazyRoute = LojaCadastrarLazyImport.update({
+  id: '/cadastrar',
+  path: '/cadastrar',
+  getParentRoute: () => LojaRoute,
+} as any).lazy(() =>
+  import('./routes/loja/cadastrar.lazy').then((d) => d.Route),
 )
 
 const LojaEntrarRoute = LojaEntrarImport.update({
@@ -181,6 +190,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LojaEntrarImport
       parentRoute: typeof LojaImport
     }
+    '/loja/cadastrar': {
+      id: '/loja/cadastrar'
+      path: '/cadastrar'
+      fullPath: '/loja/cadastrar'
+      preLoaderRoute: typeof LojaCadastrarLazyImport
+      parentRoute: typeof LojaImport
+    }
     '/loja/recuperar-senha': {
       id: '/loja/recuperar-senha'
       path: '/recuperar-senha'
@@ -272,6 +288,7 @@ const LojaAuthRouteWithChildren = LojaAuthRoute._addFileChildren(
 interface LojaRouteChildren {
   LojaAuthRoute: typeof LojaAuthRouteWithChildren
   LojaEntrarRoute: typeof LojaEntrarRoute
+  LojaCadastrarLazyRoute: typeof LojaCadastrarLazyRoute
   LojaRecuperarSenhaLazyRoute: typeof LojaRecuperarSenhaLazyRoute
   LojaIndexLazyRoute: typeof LojaIndexLazyRoute
 }
@@ -279,6 +296,7 @@ interface LojaRouteChildren {
 const LojaRouteChildren: LojaRouteChildren = {
   LojaAuthRoute: LojaAuthRouteWithChildren,
   LojaEntrarRoute: LojaEntrarRoute,
+  LojaCadastrarLazyRoute: LojaCadastrarLazyRoute,
   LojaRecuperarSenhaLazyRoute: LojaRecuperarSenhaLazyRoute,
   LojaIndexLazyRoute: LojaIndexLazyRoute,
 }
@@ -291,6 +309,7 @@ export interface FileRoutesByFullPath {
   '/admin/login': typeof AdminLoginRoute
   '/loja': typeof LojaAuthRouteWithChildren
   '/loja/entrar': typeof LojaEntrarRoute
+  '/loja/cadastrar': typeof LojaCadastrarLazyRoute
   '/loja/recuperar-senha': typeof LojaRecuperarSenhaLazyRoute
   '/loja/': typeof LojaIndexLazyRoute
   '/admin/': typeof AdminAuthIndexLazyRoute
@@ -305,6 +324,7 @@ export interface FileRoutesByTo {
   '/admin/login': typeof AdminLoginRoute
   '/loja': typeof LojaIndexLazyRoute
   '/loja/entrar': typeof LojaEntrarRoute
+  '/loja/cadastrar': typeof LojaCadastrarLazyRoute
   '/loja/recuperar-senha': typeof LojaRecuperarSenhaLazyRoute
   '/loja/conta': typeof LojaAuthContaIndexLazyRoute
   '/admin/catalog/category/create': typeof AdminAuthCatalogCategoryCreateLazyRoute
@@ -320,6 +340,7 @@ export interface FileRoutesById {
   '/loja': typeof LojaRouteWithChildren
   '/loja/_auth': typeof LojaAuthRouteWithChildren
   '/loja/entrar': typeof LojaEntrarRoute
+  '/loja/cadastrar': typeof LojaCadastrarLazyRoute
   '/loja/recuperar-senha': typeof LojaRecuperarSenhaLazyRoute
   '/loja/': typeof LojaIndexLazyRoute
   '/admin/_auth/': typeof AdminAuthIndexLazyRoute
@@ -336,6 +357,7 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/loja'
     | '/loja/entrar'
+    | '/loja/cadastrar'
     | '/loja/recuperar-senha'
     | '/loja/'
     | '/admin/'
@@ -349,6 +371,7 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/loja'
     | '/loja/entrar'
+    | '/loja/cadastrar'
     | '/loja/recuperar-senha'
     | '/loja/conta'
     | '/admin/catalog/category/create'
@@ -362,6 +385,7 @@ export interface FileRouteTypes {
     | '/loja'
     | '/loja/_auth'
     | '/loja/entrar'
+    | '/loja/cadastrar'
     | '/loja/recuperar-senha'
     | '/loja/'
     | '/admin/_auth/'
@@ -426,6 +450,7 @@ export const routeTree = rootRoute
       "children": [
         "/loja/_auth",
         "/loja/entrar",
+        "/loja/cadastrar",
         "/loja/recuperar-senha",
         "/loja/"
       ]
@@ -439,6 +464,10 @@ export const routeTree = rootRoute
     },
     "/loja/entrar": {
       "filePath": "loja/entrar.tsx",
+      "parent": "/loja"
+    },
+    "/loja/cadastrar": {
+      "filePath": "loja/cadastrar.lazy.tsx",
       "parent": "/loja"
     },
     "/loja/recuperar-senha": {
