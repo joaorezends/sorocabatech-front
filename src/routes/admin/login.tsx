@@ -71,67 +71,65 @@ function RouteComponent() {
         <a href="#" className="self-center font-medium">
           sorocaba.tech
         </a>
-        <div className="flex flex-col gap-6">
-          <Card>
-            <CardHeader className="text-center">
-              <CardTitle className="text-xl">Admin</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  handleSubmit()
-                }}
-              >
-                <div className="grid gap-6">
-                  <Field
-                    name="email"
-                    children={(field) => (
-                      <div className="grid gap-2">
-                        <Label htmlFor="email">E-mail</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          name={field.name}
-                          value={field.state.value}
-                          required
-                          onBlur={field.handleBlur}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                        />
-                      </div>
-                    )}
-                  />
-                  <Field
-                    name="password"
-                    children={(field) => (
-                      <div className="grid gap-2">
-                        <Label htmlFor="password">Senha</Label>
-                        <Input
-                          id="password"
-                          type="password"
-                          name={field.name}
-                          value={field.state.value}
-                          required
-                          onBlur={field.handleBlur}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                        />
-                      </div>
-                    )}
-                  />
-                  <Subscribe
-                    selector={(state) => [state.canSubmit, state.isSubmitting]}
-                    children={([canSubmit, isSubmitting]) => (
-                      <Button type="submit" className="w-full" disabled={!canSubmit || isPending}>
-                        {isSubmitting || isPending ? '...' : 'Entrar'}
-                      </Button>
-                    )}
-                  />
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        </div>
+        <Card>
+          <CardHeader className="text-center">
+            <CardTitle className="text-xl">Admin</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                handleSubmit()
+              }}
+            >
+              <div className="grid gap-6">
+                <Field
+                  name="email"
+                  children={(field) => (
+                    <div className="grid gap-2">
+                      <Label htmlFor="email">E-mail</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        name={field.name}
+                        value={field.state.value}
+                        required
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                      />
+                    </div>
+                  )}
+                />
+                <Field
+                  name="password"
+                  children={(field) => (
+                    <div className="grid gap-2">
+                      <Label htmlFor="password">Senha</Label>
+                      <Input
+                        id="password"
+                        type="password"
+                        name={field.name}
+                        value={field.state.value}
+                        required
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                      />
+                    </div>
+                  )}
+                />
+                <Subscribe
+                  selector={(state) => [state.canSubmit, state.isSubmitting]}
+                  children={([canSubmit, isSubmitting]) => (
+                    <Button type="submit" className="w-full" disabled={!canSubmit || isPending}>
+                      {isSubmitting || isPending ? '...' : 'Entrar'}
+                    </Button>
+                  )}
+                />
+              </div>
+            </form>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
