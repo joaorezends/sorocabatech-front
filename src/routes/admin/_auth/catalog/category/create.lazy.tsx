@@ -18,6 +18,7 @@ import { Form, FormControl, FormField, FormLabel } from "@/components/ui/form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useCallback } from "react"
+import { Loader2 } from "lucide-react"
 
 export const Route = createLazyFileRoute('/admin/_auth/catalog/category/create')({
   component: RouteComponent,
@@ -169,7 +170,8 @@ function RouteComponent() {
                   </Link>
                 </Button>
                 <Button type="submit" disabled={!isDirty || !isValid || isSubmitting}>
-                  {isDirty && isValid && !isSubmitting ? 'Criar categoria' : '...'}
+                  {isSubmitting && <Loader2 className="animate-spin" />}
+                  Criar categoria
                 </Button>
               </div>
             </div>

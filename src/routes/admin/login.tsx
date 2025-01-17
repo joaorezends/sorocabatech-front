@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCallback } from 'react'
 import { Form, FormControl, FormField, FormLabel } from '@/components/ui/form'
+import { Loader2 } from 'lucide-react'
 
 export const Route = createFileRoute('/admin/login')({
   validateSearch: z.object({
@@ -104,7 +105,8 @@ function RouteComponent() {
                     )}
                   />
                   <Button type="submit" className="w-full" disabled={!isDirty || !isValid || isSubmitting}>
-                    {isDirty && isValid && !isSubmitting ? 'Entrar' : '...'}
+                    {isSubmitting && <Loader2 className="animate-spin" />}
+                    Entrar
                   </Button>
                 </div>
               </form>
