@@ -58,7 +58,7 @@ function RouteComponent() {
     },
     validators: {
       onBlur: z.object({
-        email: z.string().email('E-mail inválido'),
+        email: z.string().email(),
         password: z.string(),
       }),
     },
