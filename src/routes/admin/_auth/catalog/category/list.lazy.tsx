@@ -5,19 +5,32 @@ import {
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Category } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { createLazyFileRoute } from '@tanstack/react-router'
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import { ColumnDef, flexRender, getCoreRowModel, getFilteredRowModel, useReactTable } from '@tanstack/react-table'
 
 export const Route = createLazyFileRoute('/admin/_auth/catalog/category/list')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
+  const columns: ColumnDef<Category>[] = [
+    {
+      accessorKey: 'name',
+      header: 'Nome da categoria',
+    },
+    {
+      accessorKey: 'isActive',
+      header: 'Categoria ativa?',
+      cell: (cell) => cell.getValue() ? 'Ativo' : 'Inativo',
+    },
+  ]
+
   const { data } = useQuery<Category[]>({
     queryKey: ['categories'],
     queryFn: async () => {
@@ -33,21 +46,12 @@ function RouteComponent() {
     initialData: [],
   })
 
-  const columns: ColumnDef<Category>[] = [
-    {
-      accessorKey: "name",
-      header: "Nome da categoria",
-    },
-    {
-      accessorKey: "isActive",
-      header: "Categoria ativa?",
-    },
-  ]
-
   const table = useReactTable({
-    columns,
     data,
+    columns,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    globalFilterFn: 'includesString',
   })
 
   return (
@@ -69,7 +73,13 @@ function RouteComponent() {
         <div className="p-4 pt-0">
           <Card>
             <CardHeader>
-              <CardTitle>Listagem de categorias</CardTitle>
+              <div className="flex items-end">
+                <CardTitle>Listagem de categorias</CardTitle>
+                <Input
+                  className="ml-auto max-w-72"
+                  onChange={event => table.setGlobalFilter(event.target.value)}
+                />
+              </div>
             </CardHeader>
             <CardContent>
               <Table>
