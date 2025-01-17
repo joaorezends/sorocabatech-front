@@ -74,30 +74,30 @@ function RouteComponent() {
   const { isDirty, isValid } = formState
 
   return (
-    <div className="flex justify-center">
-      <div className="w-full max-w-4xl">
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="/admin/catalog/category/list">
-                    Categorias
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Criar categoria</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
-        <Form {...form}>
-          <form onSubmit={handleSubmit((data) => mutate(data))}>
-            <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+    <>
+      <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+        <SidebarTrigger className="-ml-1" />
+        <Separator orientation="vertical" className="mr-2 h-4" />
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem className="hidden md:block">
+              <BreadcrumbLink asChild>
+                <Link to="/admin/catalog/category/list">
+                  Categorias
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator className="hidden md:block" />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Criar categoria</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </header>
+      <Form {...form}>
+        <form onSubmit={handleSubmit((data) => mutate(data))}>
+          <div className="flex flex-1 justify-center p-4">
+            <div className="flex w-full max-w-4xl flex-col gap-4">
               <Card>
                 <CardHeader>
                   <CardTitle>Informações principais</CardTitle>
@@ -172,7 +172,7 @@ function RouteComponent() {
               <div className="flex justify-end gap-4">
                 <Button variant="secondary" asChild>
                   <Link to="/admin/catalog/category/list">
-                      Cancelar
+                    Cancelar
                   </Link>
                 </Button>
                 <Button type="submit" disabled={!isDirty || !isValid || isPending}>
@@ -180,9 +180,9 @@ function RouteComponent() {
                 </Button>
               </div>
             </div>
-          </form>
-        </Form>
-      </div>
-    </div>
+          </div>
+        </form>
+      </Form>
+    </>
   )
 }
