@@ -32,6 +32,8 @@ const formSchema = z.object({
 })
 
 function RouteComponent() {
+  const navigate = Route.useNavigate();
+
   const submitHandler = useCallback(async (data: z.infer<typeof formSchema>) => {
     (Object.keys(data) as (keyof typeof data)[]).forEach((key) => {
       if (data[key] === '') {
@@ -51,8 +53,10 @@ function RouteComponent() {
       },
     )
     
-    console.log(response)
-  }, [])
+    if (response.ok) {
+      await navigate({ to: '/admin/catalog/category/list' })
+    }
+  }, [navigate])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
