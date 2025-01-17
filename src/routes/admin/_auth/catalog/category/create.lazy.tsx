@@ -174,8 +174,7 @@ function RouteComponent() {
                   </Link>
                 </Button>
                 <Button type="submit" disabled={!isDirty || !isValid || isSubmitting}>
-                  {isSubmitting && <Loader2 className="animate-spin" />}
-                  Criar categoria
+                  {isSubmitting ? <Loader2 className="animate-spin" /> : 'Criar categoria'}
                 </Button>
               </div>
             </div>

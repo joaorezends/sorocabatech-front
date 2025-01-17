@@ -120,8 +120,7 @@ function RouteComponent() {
                     )}
                   />
                   <Button type="submit" className="w-full" disabled={!isDirty || !isValid || isSubmitting}>
-                    {isSubmitting && <Loader2 className="animate-spin" />}
-                    Entrar
+                    {isSubmitting ? <Loader2 className="animate-spin" /> : 'Entrar'}
                   </Button>
                 </div>
                 <div className="text-center text-sm">

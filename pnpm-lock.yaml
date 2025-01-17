@@ -35,12 +35,12 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.1.6
         version: 1.1.6(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@tanstack/react-query':
+        specifier: ^5.64.1
+        version: 5.64.1(react@18.3.1)
       '@tanstack/react-router':
         specifier: ^1.95.1
         version: 1.95.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@tanstack/zod-form-adapter':
-        specifier: ^0.41.0
-        version: 0.41.0(zod@3.24.1)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1142,12 +1142,17 @@ packages:
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0
 
-  '@tanstack/form-core@0.41.0':
-    resolution: {integrity: sha512-626Xfi0C2xB9StzykIOXR/ugx/dUiwY/nY5opCovgXwBNqPEPrN3vMepC//rnGt1/jZmm3/7MW+02Ntc64UAmw==}
-
   '@tanstack/history@1.95.0':
     resolution: {integrity: sha512-w1/yWuIBqmG0Z0MPMf1OuOCce7FXyVH4L4dIA4rvpnjIUCH8qRUgloFAVg37nTMUbOmhMsY2NZDxCpKBv+CLJg==}
     engines: {node: '>=12'}
+
+  '@tanstack/query-core@5.64.1':
+    resolution: {integrity: sha512-978Wx4Wl4UJZbmvU/rkaM9cQtXXrbhK0lsz/UZhYIbyKYA8E4LdomTwyh2GHZ4oU0BKKoDH4YlKk2VscCUgNmg==}
+
+  '@tanstack/react-query@5.64.1':
+    resolution: {integrity: sha512-vW5ggHpIO2Yjj44b4sB+Fd3cdnlMJppXRBJkEHvld6FXh3j5dwWJoQo7mGtKI2RbSFyiyu/PhGAy0+Vv5ev9Eg==}
+    peerDependencies:
+      react: ^18 || ^19
 
   '@tanstack/react-router@1.95.1':
     resolution: {integrity: sha512-P5x4yNhcdkYsCEoYeGZP8Q9Jlxf0WXJa4G/xvbmM905seZc9FqJqvCSRvX3dWTPOXRABhl4g+8DHqfft0c/AvQ==}
@@ -1200,11 +1205,6 @@ packages:
   '@tanstack/virtual-file-routes@1.87.6':
     resolution: {integrity: sha512-PTpeM8SHL7AJM0pJOacFvHribbUODS51qe9NsMqku4mogh6BWObY1EeVmeGnp9o3VngAEsf+rJMs2zqIVz3WFA==}
     engines: {node: '>=12'}
-
-  '@tanstack/zod-form-adapter@0.41.0':
-    resolution: {integrity: sha512-+bXiVNAug/4iu2ImKt+owD5PremYhqQgZ8auXTV51z7SuQxZ8drNbXnTOyMAjGIYJzT8YdKsvLF4D4TUW7We0g==}
-    peerDependencies:
-      zod: ^3.x
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -3041,11 +3041,14 @@ snapshots:
       - supports-color
       - typescript
 
-  '@tanstack/form-core@0.41.0':
-    dependencies:
-      '@tanstack/store': 0.7.0
-
   '@tanstack/history@1.95.0': {}
+
+  '@tanstack/query-core@5.64.1': {}
+
+  '@tanstack/react-query@5.64.1(react@18.3.1)':
+    dependencies:
+      '@tanstack/query-core': 5.64.1
+      react: 18.3.1
 
   '@tanstack/react-router@1.95.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -3112,11 +3115,6 @@ snapshots:
   '@tanstack/store@0.7.0': {}
 
   '@tanstack/virtual-file-routes@1.87.6': {}
-
-  '@tanstack/zod-form-adapter@0.41.0(zod@3.24.1)':
-    dependencies:
-      '@tanstack/form-core': 0.41.0
-      zod: 3.24.1
 
   '@types/babel__core@7.20.5':
     dependencies:

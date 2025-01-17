@@ -1,37 +1,35 @@
 import logo from '/logo.svg';
+import { useQuery } from '@tanstack/react-query';
 import { createLazyFileRoute } from '@tanstack/react-router'
 import { Link, Social, SocialType } from '../types'
 import { Button } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
 
 export const Route = createLazyFileRoute('/')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const [socials, setSocials] = useState<Social[]>([])
-  const [links, setLinks] = useState<Link[]>([])
-
-  useEffect(() => {
-    const loadSocials = async () => {
+  const { data: socials } = useQuery<Social[]>({
+    queryKey: ['socials'],
+    queryFn: async () => {
       const response = await fetch(import.meta.env.VITE_API_URL + '/socials')
-
-      if (response.ok) {
-        setSocials(await response.json())
-      }
-    }
-
-    const loadLinks = async () => {
-      const response = await fetch(import.meta.env.VITE_API_URL + '/links')
       
       if (response.ok) {
-        setLinks(await response.json())
+        return await response.json();
       }
     }
+  })
 
-    loadSocials();
-    loadLinks();
-  }, [])
+  const { data: links } = useQuery<Link[]>({
+    queryKey: ['links'],
+    queryFn: async () => {
+      const response = await fetch(import.meta.env.VITE_API_URL + '/links')
+
+      if (response.ok) {
+        return await response.json();
+      }
+    }
+  })
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
