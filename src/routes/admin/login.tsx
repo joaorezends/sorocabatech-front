@@ -5,9 +5,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useCallback } from 'react'
 import { Form, FormControl, FormField, FormLabel } from '@/components/ui/form'
 import { Loader2 } from 'lucide-react'
+import { useMutation } from '@tanstack/react-query'
 
 export const Route = createFileRoute('/admin/login')({
   validateSearch: z.object({
@@ -37,23 +37,25 @@ function RouteComponent() {
   const navigate = Route.useNavigate();
   const search = Route.useSearch()
 
-  const submitHandler = useCallback(async (credentials: z.infer<typeof formSchema>) => {
-    const response = await fetch(
-      import.meta.env.VITE_API_URL + '/users/auth/login',
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'content-type': 'application/json',
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (credentials: z.infer<typeof formSchema>) => {
+      const response = await fetch(
+        import.meta.env.VITE_API_URL + '/users/auth/login',
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify(credentials),
         },
-        body: JSON.stringify(credentials),
-      },
-    )
-    
-    if (response.ok) {
-      await navigate({ to: search.redirect || '/admin' })
-    }
-  }, [navigate, search.redirect])
+      )
+      
+      if (response.ok) {
+        await navigate({ to: search.redirect || '/admin' })
+      }
+    },
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -63,8 +65,8 @@ function RouteComponent() {
     }
   })
 
-  const { formState } = form
-  const { isDirty, isValid, isSubmitting } = formState
+  const { handleSubmit, formState } = form
+  const { isDirty, isValid } = formState
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
@@ -78,7 +80,7 @@ function RouteComponent() {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(submitHandler)}>
+              <form onSubmit={handleSubmit((data) => mutate(data))}>
                 <div className="grid gap-6">
                   <FormField
                     control={form.control}
@@ -104,8 +106,8 @@ function RouteComponent() {
                       </div>
                     )}
                   />
-                  <Button type="submit" className="w-full" disabled={!isDirty || !isValid || isSubmitting}>
-                    {isSubmitting ? <Loader2 className="animate-spin" /> : 'Entrar'}
+                  <Button type="submit" className="w-full" disabled={!isDirty || !isValid || isPending}>
+                    {isPending ? <Loader2 className="animate-spin" /> : 'Entrar'}
                   </Button>
                 </div>
               </form>

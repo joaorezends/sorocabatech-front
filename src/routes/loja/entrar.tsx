@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormLabel } from '@/components/ui/form'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useCallback } from 'react'
 import { Loader2 } from 'lucide-react'
+import { useMutation } from '@tanstack/react-query'
 
 export const Route = createFileRoute('/loja/entrar')({
   validateSearch: z.object({
@@ -36,23 +36,25 @@ function RouteComponent() {
   const navigate = Route.useNavigate()
   const search = Route.useSearch()
 
-  const submitHandler = useCallback(async (credentials: z.infer<typeof formSchema>) => {
-    const response = await fetch(
-      import.meta.env.VITE_API_URL + '/customers/auth/login',
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'content-type': 'application/json',
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (credentials: z.infer<typeof formSchema>) => {
+      const response = await fetch(
+        import.meta.env.VITE_API_URL + '/customers/auth/login',
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify(credentials),
         },
-        body: JSON.stringify(credentials),
-      },
-    )
-
-    if (response.ok) {
-      await navigate({ to: search.redirect || '/loja' })
-    }
-  }, [navigate, search.redirect])
+      )
+  
+      if (response.ok) {
+        await navigate({ to: search.redirect || '/loja' })
+      }
+    },
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -62,8 +64,8 @@ function RouteComponent() {
     }
   })
 
-  const { formState } = form
-  const { isDirty, isValid, isSubmitting } = formState
+  const { handleSubmit, formState } = form
+  const { isDirty, isValid } = formState
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
@@ -78,7 +80,7 @@ function RouteComponent() {
             <Form {...form}>
               <form
                 className="flex flex-col gap-6"
-                onSubmit={form.handleSubmit(submitHandler)}
+                onSubmit={handleSubmit((data) => mutate(data))}
               >
                 <div className="flex flex-col items-center gap-2 text-center">
                   <h1 className="text-2xl font-bold">Entre em sua conta</h1>
@@ -119,8 +121,8 @@ function RouteComponent() {
                       </div>
                     )}
                   />
-                  <Button type="submit" className="w-full" disabled={!isDirty || !isValid || isSubmitting}>
-                    {isSubmitting ? <Loader2 className="animate-spin" /> : 'Entrar'}
+                  <Button type="submit" className="w-full" disabled={!isDirty || !isValid || isPending}>
+                    {isPending ? <Loader2 className="animate-spin" /> : 'Entrar'}
                   </Button>
                 </div>
                 <div className="text-center text-sm">

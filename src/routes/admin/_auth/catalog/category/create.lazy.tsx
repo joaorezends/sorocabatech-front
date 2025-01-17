@@ -17,8 +17,8 @@ import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormLabel } from "@/components/ui/form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { useCallback } from "react"
 import { Loader2 } from "lucide-react"
+import { useMutation } from "@tanstack/react-query"
 
 export const Route = createLazyFileRoute('/admin/_auth/catalog/category/create')({
   component: RouteComponent,
@@ -34,29 +34,31 @@ const formSchema = z.object({
 function RouteComponent() {
   const navigate = Route.useNavigate();
 
-  const submitHandler = useCallback(async (data: z.infer<typeof formSchema>) => {
-    (Object.keys(data) as (keyof typeof data)[]).forEach((key) => {
-      if (data[key] === '') {
-        delete data[key]
-      }
-    })
-
-    const response = await fetch(
-      import.meta.env.VITE_API_URL + '/catalog/categories',
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'content-type': 'application/json',
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data: z.infer<typeof formSchema>) => {
+      (Object.keys(data) as (keyof typeof data)[]).forEach((key) => {
+        if (data[key] === '') {
+          delete data[key]
+        }
+      })
+  
+      const response = await fetch(
+        import.meta.env.VITE_API_URL + '/catalog/categories',
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify(data),
         },
-        body: JSON.stringify(data),
-      },
-    )
-    
-    if (response.ok) {
-      await navigate({ to: '/admin/catalog/category/list' })
-    }
-  }, [navigate])
+      )
+      
+      if (response.ok) {
+        await navigate({ to: '/admin/catalog/category/list' })
+      }
+    },
+  })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -68,8 +70,8 @@ function RouteComponent() {
     }
   })
 
-  const { formState } = form
-  const { isDirty, isValid, isSubmitting } = formState
+  const { handleSubmit, formState } = form
+  const { isDirty, isValid } = formState
 
   return (
     <div className="flex justify-center">
@@ -94,7 +96,7 @@ function RouteComponent() {
           </div>
         </header>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(submitHandler)}>
+          <form onSubmit={handleSubmit((data) => mutate(data))}>
             <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
               <Card>
                 <CardHeader>
@@ -173,8 +175,8 @@ function RouteComponent() {
                       Cancelar
                   </Link>
                 </Button>
-                <Button type="submit" disabled={!isDirty || !isValid || isSubmitting}>
-                  {isSubmitting ? <Loader2 className="animate-spin" /> : 'Criar categoria'}
+                <Button type="submit" disabled={!isDirty || !isValid || isPending}>
+                  {isPending ? <Loader2 className="animate-spin" /> : 'Criar categoria'}
                 </Button>
               </div>
             </div>
