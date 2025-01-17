@@ -1,9 +1,9 @@
 export interface Category {
   id: number;
-  active: boolean;
+  isActive: boolean;
   name: string;
   description: string | null;
-  featured: boolean;
+  isFeatured: boolean;
   seoTitle: string | null;
   seoDescription: string | null;
   seoUrl: string | null;

@@ -7,32 +7,48 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Category } from "@/types"
+import { useQuery } from "@tanstack/react-query"
 import { createLazyFileRoute } from '@tanstack/react-router'
-import { useEffect, useState } from "react"
+import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 
 export const Route = createLazyFileRoute('/admin/_auth/catalog/category/list')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const [categories, setCategories] = useState<Category[]>([])
-  
-  useEffect(() => {
-    const load = async () => {
+  const { data } = useQuery<Category[]>({
+    queryKey: ['categories'],
+    queryFn: async () => {
       const response = await fetch(
         import.meta.env.VITE_API_URL + '/catalog/categories',
         { credentials: 'include' }
       )
-
+      
       if (response.ok) {
-        setCategories(await response.json())
+        return await response.json();
       }
-    }
+    },
+    initialData: [],
+  })
 
-    load();
-  }, [])
+  const columns: ColumnDef<Category>[] = [
+    {
+      accessorKey: "name",
+      header: "Nome da categoria",
+    },
+    {
+      accessorKey: "isActive",
+      header: "Categoria ativa?",
+    },
+  ]
+
+  const table = useReactTable({
+    columns,
+    data,
+    getCoreRowModel: getCoreRowModel(),
+  })
 
   return (
     <div className="flex justify-center">
@@ -57,20 +73,45 @@ function RouteComponent() {
             </CardHeader>
             <CardContent>
               <Table>
-                {!categories.length && <TableCaption>Sem resultados.</TableCaption>}
                 <TableHeader>
-                  <TableRow>
-                    <TableHead>Nome da categoria</TableHead>
-                    <TableHead>Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {categories.map(category => (
-                    <TableRow>
-                      <TableCell>{category.name}</TableCell>
-                      <TableCell>{category.active ? 'Ativo' : 'Inativo'}</TableCell>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => {
+                        return (
+                          <TableHead key={header.id}>
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext()
+                                )}
+                          </TableHead>
+                        )
+                      })}
                     </TableRow>
                   ))}
+                </TableHeader>
+                <TableBody>
+                  {table.getRowModel().rows.length ? (
+                    table.getRowModel().rows.map((row) => (
+                      <TableRow
+                        key={row.id}
+                        data-state={row.getIsSelected() && "selected"}
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id}>
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={columns.length} className="h-24 text-center">
+                        Sem resultados.
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </CardContent>

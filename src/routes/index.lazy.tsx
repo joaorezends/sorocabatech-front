@@ -17,7 +17,7 @@ function RouteComponent() {
       if (response.ok) {
         return await response.json();
       }
-    }
+    },
   })
 
   const { data: links } = useQuery<Link[]>({
@@ -28,7 +28,7 @@ function RouteComponent() {
       if (response.ok) {
         return await response.json();
       }
-    }
+    },
   })
 
   return (
