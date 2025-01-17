@@ -1,11 +1,11 @@
-import { useForm } from '@tanstack/react-form'
-import { useMutation } from '@tanstack/react-query'
 import { createFileRoute, Link, redirect } from '@tanstack/react-router'
 import z from 'zod'
-import { Credentials } from '../../types'
-import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { Form, FormControl, FormField, FormLabel } from '@/components/ui/form'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useCallback } from 'react'
 
 export const Route = createFileRoute('/loja/entrar')({
   validateSearch: z.object({
@@ -26,43 +26,43 @@ export const Route = createFileRoute('/loja/entrar')({
   component: RouteComponent,
 })
 
+const formSchema = z.object({
+  email: z.string().email('E-mail inválido'),
+  password: z.string().min(1),
+})
+
 function RouteComponent() {
   const navigate = Route.useNavigate()
   const search = Route.useSearch()
 
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (credentials: Credentials) => {
-      const response = await fetch(
-        import.meta.env.VITE_API_URL + '/customers/auth/login',
-        {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'content-type': 'application/json',
-          },
-          body: JSON.stringify(credentials),
+  const submitHandler = useCallback(async (credentials: z.infer<typeof formSchema>) => {
+    const response = await fetch(
+      import.meta.env.VITE_API_URL + '/customers/auth/login',
+      {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'content-type': 'application/json',
         },
-      )
+        body: JSON.stringify(credentials),
+      },
+    )
 
-      if (response.ok) {
-        await navigate({ to: search.redirect || '/loja' })
-      }
-    },
-  })
+    if (response.ok) {
+      await navigate({ to: search.redirect || '/loja' })
+    }
+  }, [navigate, search.redirect])
 
-  const { handleSubmit, Field, Subscribe } = useForm({
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
       password: '',
-    },
-    validators: {
-      onBlur: z.object({
-        email: z.string().email('E-mail inválido'),
-        password: z.string(),
-      }),
-    },
-    onSubmit: async ({ value }) => mutate(value),
+    }
   })
+
+  const { formState } = form
+  const { isDirty, isValid, isSubmitting } = formState
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
@@ -74,79 +74,62 @@ function RouteComponent() {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <form
-              className="flex flex-col gap-6"
-              onSubmit={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                handleSubmit()
-              }}
-            >
-              <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="text-2xl font-bold">Entre em sua conta</h1>
-                <p className="text-balance text-sm text-muted-foreground">
-                  Digite seu e-mail abaixo para entrar em sua conta
-                </p>
-              </div>
-              <div className="grid gap-6">
-                <Field
-                  name="email"
-                  children={(field) => (
-                    <div className="grid gap-2">
-                      <Label htmlFor="email">E-mail</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        name={field.name}
-                        value={field.state.value}
-                        required
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                      />
-                    </div>
-                  )}
-                />
-                <Field
-                  name="password"
-                  children={(field) => (
-                    <div className="grid gap-2">
-                      <div className="flex items-center">
-                        <Label htmlFor="password">Senha</Label>
-                        <Link
-                          to="/loja/recuperar-senha"
-                          className="ml-auto text-sm underline-offset-4 hover:underline"
-                        >
-                          Esqueceu sua senha?
-                        </Link>
+            <Form {...form}>
+              <form
+                className="flex flex-col gap-6"
+                onSubmit={form.handleSubmit(submitHandler)}
+              >
+                <div className="flex flex-col items-center gap-2 text-center">
+                  <h1 className="text-2xl font-bold">Entre em sua conta</h1>
+                  <p className="text-balance text-sm text-muted-foreground">
+                    Digite seu e-mail abaixo para entrar em sua conta
+                  </p>
+                </div>
+                <div className="grid gap-6">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <div className="grid gap-2">
+                        <FormLabel>E-mail</FormLabel>
+                        <FormControl>
+                          <Input id="email" type="email" {...field} />
+                        </FormControl>
                       </div>
-                      <Input
-                        id="password"
-                        type="password"
-                        name={field.name}
-                        value={field.state.value}
-                        required
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                      />
-                    </div>
-                  )}
-                />
-                <Subscribe
-                  selector={(state) => [state.canSubmit, state.isSubmitting]}
-                  children={([canSubmit, isSubmitting]) => (
-                    <Button type="submit" className="w-full" disabled={!canSubmit || isPending}>
-                      {isSubmitting || isPending ? '...' : 'Entrar'}
-                    </Button>
-                  )}
-                />
-              </div>
-              <div className="text-center text-sm">
-                Não tem uma conta?{" "}
-                <Link to="/loja/cadastrar" className="underline underline-offset-4">
-                  Inscrever-se
-                </Link>
-              </div>
-            </form>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <div className="grid gap-2">
+                        <div className="flex items-center">
+                          <FormLabel>Senha</FormLabel>
+                          <Link
+                            to="/loja/recuperar-senha"
+                            className="ml-auto text-sm underline-offset-4 hover:underline"
+                          >
+                            Esqueceu sua senha?
+                          </Link>
+                        </div>
+                        <FormControl>
+                          <Input id="password" type="password" {...field} />
+                        </FormControl>
+                      </div>
+                    )}
+                  />
+                  <Button type="submit" className="w-full" disabled={!isDirty || !isValid || isSubmitting}>
+                    {isDirty && isValid && !isSubmitting ? 'Entrar' : '...'}
+                  </Button>
+                </div>
+                <div className="text-center text-sm">
+                  Não tem uma conta?{" "}
+                  <Link to="/loja/cadastrar" className="underline underline-offset-4">
+                    Inscrever-se
+                  </Link>
+                </div>
+              </form>
+            </Form>
           </div>
         </div>
       </div>

@@ -10,11 +10,6 @@ export interface Category {
   categoryId: string | null;
 }
 
-export interface Credentials {
-  email: string;
-  password: string;
-}
-
 export interface Link {
   id: number;
   name: string;

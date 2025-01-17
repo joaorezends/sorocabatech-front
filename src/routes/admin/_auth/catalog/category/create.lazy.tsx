@@ -63,6 +63,9 @@ function RouteComponent() {
     }
   })
 
+  const { formState } = form
+  const { isDirty, isValid, isSubmitting } = formState
+
   return (
     <div className="flex justify-center">
       <div className="w-full max-w-4xl">
@@ -86,105 +89,89 @@ function RouteComponent() {
           </div>
         </header>
         <Form {...form}>
-          <form className="flex flex-1 flex-col gap-4 p-4 pt-0" onSubmit={form.handleSubmit(submitHandler)}>
-            <Card>
-              <CardHeader>
-                <CardTitle>Informações principais</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-6">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <div className="grid gap-2">
-                      <FormLabel>Nome da categoria *</FormLabel>
-                      <FormControl>
-                        <Input
-                          id="name"
-                          required
-                          {...field}
-                        />
-                      </FormControl>
-                    </div>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <div className="grid gap-2">
-                      <div className="flex items-center">
-                        <FormLabel>Descrição</FormLabel>
-                        <span className="ml-auto text-sm">{field.value?.length} de 4000 caracteres</span>
+          <form onSubmit={form.handleSubmit(submitHandler)}>
+            <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Informações principais</CardTitle>
+                </CardHeader>
+                <CardContent className="grid gap-6">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <div className="grid gap-2">
+                        <FormLabel>Nome da categoria *</FormLabel>
+                        <FormControl>
+                          <Input id="name" {...field} />
+                        </FormControl>
                       </div>
-                      <FormControl>
-                        <Textarea
-                          id="description"
-                          maxLength={4000}
-                          rows={3}
-                          {...field}
-                        />
-                      </FormControl>
-                    </div>
-                  )}
-                />
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>SEO</CardTitle>
-              </CardHeader>
-              <CardContent className="grid gap-6">
-                <FormField
-                  control={form.control}
-                  name="seoTitle"
-                  render={({ field }) => (
-                    <div className="grid gap-2">
-                      <div className="flex items-center">
-                        <FormLabel>Tag Title</FormLabel>
-                        <span className="ml-auto text-sm">{field.value?.length} de 70 caracteres</span>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <div className="grid gap-2">
+                        <div className="flex items-center">
+                          <FormLabel>Descrição</FormLabel>
+                          <span className="ml-auto text-sm">{field.value?.length} de 4000 caracteres</span>
+                        </div>
+                        <FormControl>
+                          <Textarea id="description" maxLength={4000} rows={3} {...field} />
+                        </FormControl>
                       </div>
-                      <FormControl>
-                        <Input
-                          id="seoTitle"
-                          maxLength={70}
-                          {...field}
-                        />
-                      </FormControl>
-                    </div>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="seoDescription"
-                  render={({ field }) => (
-                    <div className="grid gap-2">
-                      <div className="flex items-center">
-                        <FormLabel>Meta Tag Description</FormLabel>
-                        <span className="ml-auto text-sm">{field.value?.length} de 250 caracteres</span>
+                    )}
+                  />
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>SEO</CardTitle>
+                </CardHeader>
+                <CardContent className="grid gap-6">
+                  <FormField
+                    control={form.control}
+                    name="seoTitle"
+                    render={({ field }) => (
+                      <div className="grid gap-2">
+                        <div className="flex items-center">
+                          <FormLabel>Tag Title</FormLabel>
+                          <span className="ml-auto text-sm">{field.value?.length} de 70 caracteres</span>
+                        </div>
+                        <FormControl>
+                          <Input id="seoTitle" maxLength={70} {...field} />
+                        </FormControl>
                       </div>
-                      <FormControl>
-                        <Textarea
-                          id="seoDescription"
-                          maxLength={250}
-                          rows={3}
-                          {...field}
-                        />
-                      </FormControl>
-                    </div>
-                  )}
-                />
-              </CardContent>
-            </Card>
-            <div className="flex justify-end gap-4">
-              <Button variant="secondary" asChild>
-                <Link to="/admin/catalog/category/list">
-                    Cancelar
-                </Link>
-              </Button>
-              <Button type="submit" disabled={!form.formState.isDirty || !form.formState.isValid}>
-                {form.formState.isDirty && form.formState.isValid ? 'Criar categoria' : '...'}
-              </Button>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="seoDescription"
+                    render={({ field }) => (
+                      <div className="grid gap-2">
+                        <div className="flex items-center">
+                          <FormLabel>Meta Tag Description</FormLabel>
+                          <span className="ml-auto text-sm">{field.value?.length} de 250 caracteres</span>
+                        </div>
+                        <FormControl>
+                          <Textarea id="seoDescription" maxLength={250} rows={3} {...field} />
+                        </FormControl>
+                      </div>
+                    )}
+                  />
+                </CardContent>
+              </Card>
+              <div className="flex justify-end gap-4">
+                <Button variant="secondary" asChild>
+                  <Link to="/admin/catalog/category/list">
+                      Cancelar
+                  </Link>
+                </Button>
+                <Button type="submit" disabled={!isDirty || !isValid || isSubmitting}>
+                  {isDirty && isValid && !isSubmitting ? 'Criar categoria' : '...'}
+                </Button>
+              </div>
             </div>
           </form>
         </Form>
