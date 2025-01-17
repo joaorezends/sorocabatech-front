@@ -13,22 +13,24 @@ function RouteComponent() {
   const [links, setLinks] = useState<Link[]>([])
 
   useEffect(() => {
-    const fetchSocials = async () => {
+    const loadSocials = async () => {
       const response = await fetch(import.meta.env.VITE_API_URL + '/socials')
 
       if (response.ok) {
         setSocials(await response.json())
       }
     }
-    const fetchLinks = async () => {
+
+    const loadLinks = async () => {
       const response = await fetch(import.meta.env.VITE_API_URL + '/links')
       
       if (response.ok) {
         setLinks(await response.json())
       }
     }
-    fetchSocials();
-    fetchLinks();
+
+    loadSocials();
+    loadLinks();
   }, [])
 
   return (
